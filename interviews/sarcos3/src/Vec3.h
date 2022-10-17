@@ -17,10 +17,14 @@ class Vec3
     return (x * other.x) + (y * other.y) + (z * other.z);
   }
 
-  void print()
+  void print() const
   {
-    std::cout << "(" << x << ", " << y << ", " << z << ")"
-              << "\n";
+    std::cout << "(" << x << ", " << y << ", " << z << ")" << std::endl;
+  }
+
+  bool operator ==(const Vec3& other) const
+  {
+    return x == other.x && y == other.y && z == other.z;
   }
 
   private:
