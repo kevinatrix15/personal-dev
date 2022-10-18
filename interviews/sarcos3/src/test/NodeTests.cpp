@@ -1,7 +1,18 @@
+/**
+ * @file NodeTests.h
+ * @brief Unit tests for the Node class.
+ * @author Kevin Briggs <kevinabriggs@hotmail.com>
+ * @version 1
+ * @date 2022-10-18
+ */
 #include "Node.h"
 #include "catch2.h"
 
 #include <sstream>
+
+/******************************************************************************
+* UNIT TESTS ******************************************************************
+******************************************************************************/
 
 /**
  * @brief Attempt to create the following tree of Nodes and print it out:

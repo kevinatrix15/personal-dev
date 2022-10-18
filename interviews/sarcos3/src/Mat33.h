@@ -1,3 +1,10 @@
+/**
+ * @file Mat33.h
+ * @brief Definition of the 3x3 matrix class.
+ * @author Kevin Briggs <kevinabriggs@hotmail.com>
+ * @version 1
+ * @date 2022-10-18
+ */
 #pragma once
 
 #include "Vec3.h"
@@ -5,12 +12,20 @@
 #include <ostream>
 #include <string>
 
-// TODO: add section headers
+/******************************************************************************
+* CONSTANTS *******************************************************************
+******************************************************************************/
+
 namespace
 {
 constexpr unsigned int INDENT_MULT = 2;
 constexpr unsigned int NUM_COLS = 3;
 } // namespace
+
+
+/******************************************************************************
+* Mat33 Class *****************************************************************
+******************************************************************************/
 
 class Mat33
 {
@@ -58,6 +73,7 @@ class Mat33
    * [[v0.x, v1.x, v2.x]        [[v0.x, v0.y, v0.z]
    *  [v0.y, v1.y, v2.y]   =>    [v1.x, v1.y, v1.z]
    *  [v0.z, v1.z, v2.z]         [v2.x, v2.y, v2.z]
+   * ]                          ]
    */
   void transpose()
   {
@@ -66,11 +82,6 @@ class Mat33
     swap(col[0].y, col[1].x);
     swap(col[0].z, col[2].x);
     swap(col[1].z, col[2].y);
-  }
-
-  static std::string indentString(const unsigned int level)
-  {
-    return std::string(level * INDENT_MULT, ' ');
   }
 
   /**
@@ -83,7 +94,7 @@ class Mat33
              const unsigned int indentLevel = 0) const
   {
     const std::string indent = indentString(indentLevel);
-    // TODO: FUTURE WORK- use setw to keep all column widths aligned
+    // TODO: FUTURE WORK- find max element width and use setw to keep all column widths aligned
     // https://cplusplus.com/forum/beginner/275937/
     stream << indent << col[0].x << ", " << col[1].x << ", " << col[2].x
            << std::endl;
@@ -91,6 +102,11 @@ class Mat33
            << std::endl;
     stream << indent << col[0].z << ", " << col[1].z << ", " << col[2].z
            << std::endl;
+  }
+
+  static std::string indentString(const unsigned int level)
+  {
+    return std::string(level * INDENT_MULT, ' ');
   }
 
   private:

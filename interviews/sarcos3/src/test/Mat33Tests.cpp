@@ -1,5 +1,16 @@
+/**
+ * @file Mat33Tests.h
+ * @brief Unit tests for the 3x3 matrix class.
+ * @author Kevin Briggs <kevinabriggs@hotmail.com>
+ * @version 1
+ * @date 2022-10-18
+ */
 #include "Mat33.h"
 #include "catch2.h"
+
+/******************************************************************************
+* UNIT TESTS ******************************************************************
+******************************************************************************/
 
 TEST_CASE("Mat33 assignment matches inputs", "[ctor]")
 {

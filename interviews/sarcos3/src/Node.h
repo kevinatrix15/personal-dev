@@ -1,3 +1,10 @@
+/**
+ * @file Node.h
+ * @brief Definition of the Node class, composed of Matrix data and children.
+ * @author Kevin Briggs <kevinabriggs@hotmail.com>
+ * @version 1
+ * @date 2022-10-18
+ */
 #pragma once
 
 #include "Mat33.h"
@@ -5,6 +12,10 @@
 #include <cassert>
 #include <iostream>
 #include <ostream>
+
+/******************************************************************************
+* Node Class ******************************************************************
+******************************************************************************/
 
 class Node
 {

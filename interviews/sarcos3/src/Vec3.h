@@ -1,6 +1,17 @@
+/**
+ * @file Vec3.h
+ * @brief Definition of the three-component vector class.
+ * @author Kevin Briggs <kevinabriggs@hotmail.com>
+ * @version 1
+ * @date 2022-10-18
+ */
 #pragma once
 
 #include <iostream>
+
+/******************************************************************************
+* Vec3 Class ******************************************************************
+******************************************************************************/
 
 class Vec3
 {
