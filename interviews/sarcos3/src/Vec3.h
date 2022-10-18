@@ -12,6 +12,11 @@ class Vec3
     // do nothing
   }
 
+  Vec3() : Vec3(0.0, 0.0, 0.0)
+  {
+    // do nothing
+  }
+
   double dot(const Vec3& other) const
   {
     return (x * other.x) + (y * other.y) + (z * other.z);
@@ -22,7 +27,7 @@ class Vec3
     std::cout << "(" << x << ", " << y << ", " << z << ")" << std::endl;
   }
 
-  bool operator ==(const Vec3& other) const
+  bool operator==(const Vec3& other) const
   {
     return x == other.x && y == other.y && z == other.z;
   }

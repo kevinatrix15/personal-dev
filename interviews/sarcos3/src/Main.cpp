@@ -37,6 +37,28 @@ int main()
     m.print();
   }
 
+  // Create a deep copy of Mat33
+  {
+    const Vec3 c0{1.0, 2.0, 3.0};
+    const Vec3 c1{4.0, 5.0, 6.0};
+    const Vec3 c2{7.0, 8.0, 9.0};
+    Mat33 m0(c0, c1, c2);
+    Mat33 m1 = m0;
+    std::cout << std::endl;
+    std::cout << "m0, before m1 transposed: " << std::endl;
+    m0.print();
+
+    // Transpose m1
+    std::cout << std::endl;
+    std::cout << "m1': " << std::endl;
+    m1.transpose();
+    m1.print();
+
+    std::cout << std::endl;
+    std::cout << "m0, after m1 transposed: " << std::endl;
+    m0.print();
+  }
+
   // Create a node with children nodes
   {
     Node c0({{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}}, nullptr, 0);

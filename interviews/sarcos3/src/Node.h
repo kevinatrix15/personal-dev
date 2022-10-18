@@ -4,6 +4,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <ostream>
 
 class Node
 {
@@ -15,22 +16,30 @@ class Node
     assert((numChildren > 0 && children) || (numChildren == 0 && !children));
   }
 
-  void print(unsigned int level = 0, const unsigned int childID = 0) const
+  /**
+   * @brief Print the data associated with the node, indented based on the level
+   * of the tree / graph the node is relative to the root node.
+   *
+   * @param stream The stream to print the node data to.
+   * @param level The level of the current node relative to the root node.
+   * @param childID The child ID associated with the parent node.
+   */
+  void print(std::ostream& stream = std::cout,
+             unsigned int level = 0,
+             const unsigned int childID = 0) const
   {
-    std::cout << Mat33::indentString(level) << "Level: " << level
-              << ", Child ID: " << childID << std::endl;
+    stream << Mat33::indentString(level) << "Level: " << level
+           << ", Child ID: " << childID << std::endl;
 
-    // print this node's data
-    data.print(level);
+    // Print this node's matrix data
+    data.print(stream, level);
 
-    std::cout << std::endl;
+    stream << std::endl;
 
-    // print each child's data
-    // TODO: give a 'level' argument to this print() to indicate
-    // number of tabs to indent??
+    // Print each child's data
     level++;
     for (unsigned int i = 0; i < numChildren; ++i) {
-      children[i].print(level, i);
+      children[i].print(stream, level, i);
     }
   }
 

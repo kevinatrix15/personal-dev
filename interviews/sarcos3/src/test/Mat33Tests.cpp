@@ -1,5 +1,4 @@
 #include "Mat33.h"
-
 #include "catch2.h"
 
 // tests:
@@ -16,7 +15,7 @@ TEST_CASE("Mat33 assignment matches inputs", "[ctor]")
   Vec3 v0{1.0, 2.0, 3.0};
   Vec3 v1{4.0, 5.0, 6.0};
   Vec3 v2{7.0, 8.0, 9.0};
-  
+
   // act
   Mat33 m({v0, v1, v2});
   const auto cols = m.get();
@@ -27,13 +26,14 @@ TEST_CASE("Mat33 assignment matches inputs", "[ctor]")
   REQUIRE(v2 == cols[2]);
 }
 
-TEST_CASE("Matrix transpose of identity matrix appears unchanged", "[transpose]")
+TEST_CASE("Matrix transpose of identity matrix appears unchanged",
+          "[transpose]")
 {
   // arrange
   Vec3 v0{1.0, 0.0, 0.0};
   Vec3 v1{0.0, 1.0, 0.0};
   Vec3 v2{0.0, 0.0, 1.0};
-  
+
   // act
   Mat33 I({v0, v1, v2});
   I.transpose();
@@ -45,13 +45,14 @@ TEST_CASE("Matrix transpose of identity matrix appears unchanged", "[transpose]"
   REQUIRE(v2 == cols[2]);
 }
 
-TEST_CASE("Matrix transpose of unique matrix matches pre-calculated", "[transpose]")
+TEST_CASE("Matrix transpose of unique matrix matches pre-calculated",
+          "[transpose]")
 {
   // arrange
   Vec3 v0{1.0, 2.0, 3.0};
   Vec3 v1{4.0, 5.0, 6.0};
   Vec3 v2{7.0, 8.0, 9.0};
-  
+
   // act
   Mat33 m({v0, v1, v2});
   m.transpose();
@@ -71,13 +72,15 @@ TEST_CASE("Matrix transpose of unique matrix matches pre-calculated", "[transpos
   REQUIRE(v2.z == cols[2].z);
 }
 
-TEST_CASE("Deep copy ensures original matrix is unchanged when copy is modified", "[transpose]")
+TEST_CASE(
+    "Deep copy ensures original matrix is unchanged when copy is modified",
+    "[transpose]")
 {
   // arrange
   Vec3 v0{1.0, 2.0, 3.0};
   Vec3 v1{4.0, 5.0, 6.0};
   Vec3 v2{7.0, 8.0, 9.0};
-  
+
   // act
   Mat33 m0({v0, v1, v2});
   Mat33 m1 = m0;
