@@ -1,14 +1,6 @@
 #include "Mat33.h"
 #include "catch2.h"
 
-// tests:
-// - assignment
-// - transpose
-//      + identity stays itself
-//      + simple pre-calculated transpose
-// - deep copy- ensure original is unchanged if we transform the new
-// - print- ensure contains correct values on each row...?
-//      + formatting- check pretty print matches expected format?
 TEST_CASE("Mat33 assignment matches inputs", "[ctor]")
 {
   // arrange

@@ -3,9 +3,6 @@ set(this_target coding-quiz)
 # Specify output folders
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
-# TODO: delete this?
-include_directories(./)
-
 # select all c++ files as CPP
 file(GLOB CPP "*.cpp")
 # Select all header files

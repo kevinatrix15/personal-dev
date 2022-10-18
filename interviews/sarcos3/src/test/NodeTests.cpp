@@ -3,11 +3,6 @@
 
 #include <sstream>
 
-// Test cases:
-// - Node without children-
-// - check printed content:
-// https://stackoverflow.com/questions/40297782/c-unit-testing-check-output-is-correct
-
 /**
  * @brief Attempt to create the following tree of Nodes and print it out:
  *
@@ -22,7 +17,7 @@
  *                       c1c0
  *
  */
-TEST_CASE("Vec3 assignment matches inputs", "[ctor]")
+TEST_CASE("Node's print is executed successfully", "[print]")
 {
   // arrange
   Node c0({{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}}, nullptr, 0);
@@ -34,11 +29,10 @@ TEST_CASE("Vec3 assignment matches inputs", "[ctor]")
   Node rootChildren[] = {c0, c1};
   Node root({{0, 1, 2}, {0, 1, 2}, {0, 1, 2}}, rootChildren, 2);
 
-  // act
+  // act & assert
   std::stringstream ss;
-  print(ss);
+  root.print(ss);
 
-  // assert
   // TODO: FUTURE WORK- Parse ss line by line, comparing to inputs.
   // For now, consider visual inspection as passing
 }

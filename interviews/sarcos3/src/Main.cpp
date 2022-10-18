@@ -6,7 +6,7 @@
 
 int main()
 {
-  // Vector dot product
+  // Vector dot product with pretty-printing
   {
     const Vec3 v1{1.0, 2.0, 3.0};
     const Vec3 v2{2.0, 4.0, 6.0};
@@ -20,7 +20,7 @@ int main()
     std::cout << "res: " << r << std::endl;
   }
 
-  // Matrix construction and transpose
+  // Matrix construction and transpose in-place, with pretty-printing
   {
     const Vec3 c0{1.0, 2.0, 3.0};
     const Vec3 c1{4.0, 5.0, 6.0};
@@ -59,7 +59,7 @@ int main()
     m0.print();
   }
 
-  // Create a node with children nodes
+  // Create a node with children nodes and pretty-print it and its descendents
   {
     Node c0({{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}}, nullptr, 0);
 

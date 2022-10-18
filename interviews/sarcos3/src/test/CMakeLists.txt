@@ -15,7 +15,13 @@ target_include_directories(
 source_group("Header Files" FILES ${H})
 source_group("Source Files" FILES ${CPP})
 
-set(LIBS coding-quiz)
+# Set up Catch lib for testing
+add_library(catch INTERFACE)
+target_include_directories(catch INTERFACE
+ "${CMAKE_SOURCE_DIR}/catch"
+)
+
+set(LIBS coding-quiz catch)
 
 # Set libraries needed by the test binary
 target_link_libraries(${this_target} ${LIBS})
