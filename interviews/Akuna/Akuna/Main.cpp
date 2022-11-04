@@ -58,15 +58,14 @@ struct Order
     order_type type;
     int price;
     int quantity;
-    time_t timeStamp;
 
-    Order() : type(GFD), price(0), quantity(0), timeStamp(0)
+    Order() : type(GFD), price(0), quantity(0)
     {
         // do nothing
     }
 
-    Order(const order_type& type, const int price, const int quantity, const time_t timeStamp) :
-        type(type), price(price), quantity(quantity), timeStamp(timeStamp)
+    Order(const order_type& type, const int price, const int quantity) :
+        type(type), price(price), quantity(quantity)
     {
         // do nothing
     }
@@ -85,6 +84,23 @@ struct PriceQuantityID
 
     PriceQuantityID(const int price, const int quantity, const string orderID) :
         price(price), quantity(quantity), orderID(orderID)
+    {
+        // do nothing
+    }
+};
+
+struct PriceID
+{
+    int price;
+    string orderID;
+
+    PriceID() : price(0), orderID("")
+    {
+        // do nothing
+    }
+
+    PriceID(const int price, const string orderID) :
+        price(price), orderID(orderID)
     {
         // do nothing
     }
@@ -168,16 +184,13 @@ class OrderManager
         // ignore non-unique order IDs
 
         const int updatedBuyQty = checkPriceCrossOnBuy({order.price, order.quantity, orderID});
-        Order updatedOrder(order.type, order.price, updatedBuyQty, order.timeStamp);
+        Order updatedOrder(order.type, order.price, updatedBuyQty);
 
 
         if (shouldRecord(orderID, order)) {
-			// get the current time stamp
-			const time_t timeStamp = time(0);
-
             m_buysMap[orderID] = order;       
             m_buysPriceOrderedMap[order.price] = { order.quantity, orderID };
-            m_buysTimeOrderedMap[timeStamp] = { order.price, order.quantity, orderID };
+            m_buysTimeOrderedMap.emplace_back(PriceID{ order.price, orderID });
         }
     }
     
@@ -195,13 +208,8 @@ class OrderManager
     {
         // erase the entry with orderID key if it exists
         // TODO: update all data structures / maps here
-        time_t timeStamp = m_buysMap[orderID].timeStamp;
         m_buysMap.erase(orderID);
-        m_buysTimeOrderedMap.erase(timeStamp);
-
-        time_t timeStamp = m_sellsMap[orderID].timeStamp;
         m_sellsMap.erase(orderID);
-        m_sellsTimeOrderedMap.erase(timeStamp);
     }
     
     // * Modify- Check order exists. Update operation, price, quantity. NOTE: can't modify IOC type! 
@@ -255,7 +263,6 @@ class OrderManager
     }
     
     private:
-    // TODO: add timestamp to Order definition for cross-referencing with time-ordered map
     unordered_map<string, Order> m_buysMap;
     unordered_map<string, Order> m_sellsMap;
 
@@ -265,10 +272,8 @@ class OrderManager
     map<int, pair<int, string>> m_buysPriceOrderedMap;
     map<int, pair<int, string>> m_sellsPriceOrderedMap;
 
-    // TODO: change this to use global order count instead of timestamp to ensure
-    // unique
-    map<time_t, PriceQuantityID> m_buysTimeOrderedMap;
-    map<time_t, PriceQuantityID> m_sellsTimeOrderedMap;
+    vector<PriceID> m_buysTimeOrderedMap;
+    vector<PriceID> m_sellsTimeOrderedMap;
     
     static map<int, int> sortMapByPrice(
         const unordered_map<string, Order>& inMap)
@@ -303,19 +308,28 @@ class OrderManager
 
             // iterate over sells time map, checking for prices <= buy price
             // this ensures we choose the earliest order first
-            for (auto [time, sellInfo] : m_sellsTimeOrderedMap) {
+            for (size_t i = 0; i < m_sellsTimeOrderedMap.size(); ++i) {
+                const PriceID sellInfo = m_sellsTimeOrderedMap[i];
                 if (sellInfo.price < buyInfo.price) {
-                    const int tradeQty = min(remainingBuyQty, sellInfo.quantity);
+                    // O(1) access of unordered_map
+                    const int sellQty = m_sellsMap[buyInfo.orderID].quantity;
+                    const int tradeQty = min(remainingBuyQty, sellQty);
                     remainingBuyQty -= tradeQty;
+
                     // print trade
                     printTrade({ sellInfo.price, tradeQty, sellInfo.orderID },
                         { buyInfo.price, tradeQty, buyInfo.orderID });
+
                     // cancel or subtract traded sells
-                    if (tradeQty == sellInfo.quantity) {
+                    if (tradeQty == sellQty) {
                         cancel(sellInfo.orderID);
+                        // TODO: consider replacing entry with an invalid value to avoid memory reallocation
+                        // evaluate tradeoffs on continuously increasing container and
+                        // iteration over...
+                        m_sellsTimeOrderedMap.erase(m_sellsTimeOrderedMap.begin() + i);
                     }
                     else {
-                        Modification mod(SELL, sellInfo.price, sellInfo.quantity - tradeQty);
+                        Modification mod(SELL, sellInfo.price, sellQty - tradeQty);
                         modify(sellInfo.orderID, mod);
                     }
                 }
@@ -324,14 +338,10 @@ class OrderManager
                 }
             }
         }
-            // if found:
-            // - append orders involved in trade
-            // - update all maps to subtract sells involved
-            // - if sell.quantity < buy.quantity, continue to next order
-            // break once exhausted
         return remainingBuyQty;
     }
 
+    // TODO: generalize this for use with both buys and sells
     int checkPriceCrossOnSell(const PriceQuantityID& sellInfo)
     {
         int remainingSellQty = sellInfo.quantity;
@@ -342,19 +352,28 @@ class OrderManager
 
             // iterate over buys time map, checking for prices >= sell price
             // this ensures we choose the earliest order first
-            for (auto [time, buyInfo] : m_buysTimeOrderedMap) {
+            for (size_t i = 0; i < m_buysTimeOrderedMap.size(); ++i) {
+                const PriceID buyInfo = m_buysTimeOrderedMap[i];
                 if (sellInfo.price < buyInfo.price) {
-                    const int tradeQty = min(remainingSellQty, buyInfo.quantity);
+                    // O(1) access of unordered_map
+                    const int buyQty = m_buysMap[buyInfo.orderID].quantity;
+                    const int tradeQty = min(remainingSellQty, buyQty);
                     remainingSellQty -= tradeQty;
+
                     // print trade
                     printTrade({ buyInfo.price, tradeQty, buyInfo.orderID },
                         { sellInfo.price, tradeQty, sellInfo.orderID });
+
                     // cancel or subtract traded buys
-                    if (tradeQty == buyInfo.quantity) {
+                    if (tradeQty == buyQty) {
                         cancel(buyInfo.orderID);
+                        // TODO: consider replacing entry with an invalid value to avoid memory reallocation
+                        // evaluate tradeoffs on continuously increasing container and
+                        // iteration over...
+                        m_buysTimeOrderedMap.erase(m_buysTimeOrderedMap.begin() + i);
                     }
                     else {
-                        Modification mod(BUY, buyInfo.price, buyInfo.quantity - tradeQty);
+                        Modification mod(BUY, buyInfo.price, buyQty - tradeQty);
                         modify(buyInfo.orderID, mod);
                     }
                 }
@@ -363,11 +382,6 @@ class OrderManager
                 }
             }
         }
-            // if found:
-            // - append orders involved in trade
-            // - update all maps to subtract sells involved
-            // - if sell.quantity < buy.quantity, continue to next order
-            // break once exhausted
         return remainingSellQty;
     }
 
@@ -500,7 +514,6 @@ class InputHandler
         const int price = static_cast<int>(stoi(commands[2]));
         const int quantity = static_cast<int>(stoi(commands[3]));
         const string id = commands[4];
-        const time_t timeStamp = time(0);
         return make_pair(id, Order(type, price, quantity));
     }
     
