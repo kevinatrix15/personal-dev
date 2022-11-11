@@ -1,0 +1,16 @@
+build
+win_build
+Release
+Debug
+
+# swap files
+*.swp
+
+# editor settings
+.vscode
+.vs
+
+*.bak
+
+#windows vim backups
+*~
