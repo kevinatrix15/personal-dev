@@ -21,13 +21,13 @@ target_include_directories(catch INTERFACE
  "${CMAKE_SOURCE_DIR}/catch"
 )
 
-set(LIBS coding-quiz catch)
+set(LIBS save-bb8 catch)
 
 # Set libraries needed by the test binary
 target_link_libraries(${this_target} ${LIBS})
 
 # Set projects this test depends on
-add_dependencies(${this_target} coding-quiz)
+add_dependencies(${this_target} save-bb8)
 
 # Set the test binary to run
 add_test(NAME ${this_target} COMMAND ${this_target})
