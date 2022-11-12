@@ -1,4 +1,5 @@
 #include <cassert>
+#include <memory>
 
 namespace MESH
 {
@@ -29,8 +30,10 @@ class Grid
 
     // TODO: add convenience overloaded operators to map from 2D to 1D indexing
     // TODO: test this for correctness
-    size_t operator()(const size_t xIdx, const size_t yIdx)
+    size_t operator()(const size_t xIdx, const size_t yIdx) const
     {
+        assert(xIdx < m_nx);
+        assert(yIdx < m_ny);
         return xIdx + yIdx * m_nx;
     }
 
