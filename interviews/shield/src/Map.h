@@ -83,7 +83,7 @@ class ObstacleDistanceDetector
 };
 #endif
 
-enum class cell_state: uint8_t
+enum class cell_state
 {
     FREE,
     OBJECT,
@@ -112,7 +112,7 @@ class CellStateMap
     {
         for (size_t yIdx = 0; yIdx < states.m_grid.numY(); ++yIdx) {
             for (size_t xIdx = 0; xIdx < states.m_grid.numX(); ++xIdx) {
-                osRef << std::to_string((xIdx, yIdx)) << " ";
+                osRef << static_cast<int>(states(xIdx, yIdx)) << " ";
             }
             osRef << std::endl;
         }
