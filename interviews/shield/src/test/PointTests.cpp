@@ -5,8 +5,6 @@
 
 #include <string>
 
-using namespace MESH;
-
 namespace {
 	void testDist(const std::string& description, const Point& p1, const Point& p2, const size_t expected) {
 		SECTION(description) {

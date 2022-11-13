@@ -1,12 +1,12 @@
+#pragma once
+
 #include "Grid.h"
 #include "Point.h"
 
 #include <algorithm>
+#include <ostream>
 #include <numeric>
 #include <vector>
-
-// TODO: get rid of namespaces...
-using namespace MESH;
 
 #if 0
 class DistanceMap
@@ -107,9 +107,16 @@ class CellStateMap
         return m_states[m_grid(xIdx, yIdx)];
     }
 
-    // TODO: consider adding a method to print output to stream for writing / visualizing
-    // friend std::ostream& operator<<(std::ostream &stream, vect3D const &p) { return stream << "(" << p.x << ", " << p.y << ", " << p.z << ")" << std::flush; };
-
+    friend std::ostream& operator<<(std::ostream &os, const CellStateMap& states)
+    {
+        for (size_t yIdx = 0; yIdx < states.m_grid.numY(); ++yIdx) {
+            for (size_t xIdx = 0; xIdx < states.m_grid.numX(); ++xIdx) {
+                os << states(xIdx, yIdx) << " ";
+            }
+            os << std::endl;
+        }
+        return os;
+    };
 
     private:
     Grid m_grid;
@@ -147,8 +154,9 @@ class ConfigurationSpace
 {
     public:
     // NOTE: we assume the robot radius an integer value, which can be zero as a special case
-    ConfigurationSpace(const size_t nx, const size_t ny, const size_t robotRadius) :
-        m_grid(nx, ny), m_robotRadius(robotRadius), m_cellStates(m_grid)
+    // TODO: construct with a grid object
+    ConfigurationSpace(const Grid& grid, const size_t robotRadius) :
+        m_grid(grid), m_robotRadius(robotRadius), m_cellStates(m_grid)
     {
         // initialize distance map based on distance to outer boundaries??
         // BoundaryDistanceDetector::detect()
@@ -160,7 +168,20 @@ class ConfigurationSpace
         // TODO: inspect obstacles to ensure within grid
         // add obstacles
         // add padding around obstacles
+        for (const auto& obstacle : obstacles) {
+            // extend obstacles with robot radius
+            const Circle padded(obstacle.center(), obstacle.radius() + m_robotRadius);
+            GridCircle::visit(padded, m_grid,[this](const size_t xIdx, const size_t yIdx) {
+                m_cellStates(xIdx, yIdx) = cell_state::OBJECT;
+            }
+            );
+        }
     }
+
+    friend std::ostream& operator<<(std::ostream &os, const ConfigurationSpace& space)
+    {
+        return os << space.m_cellStates;
+    };
 
     private:
     Grid m_grid;

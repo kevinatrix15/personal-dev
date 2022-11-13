@@ -1,8 +1,8 @@
+#pragma once
+
 #include <cassert>
 #include <cmath>
 
-namespace MESH
-{
 class Point
 {
     public:
@@ -49,19 +49,3 @@ class Point
     size_t m_x;
     size_t m_y;
 };
-
-class Circle
-{
-    public:
-    // NOTE: we allow a circle with a zero radius
-    Circle(const Point& center, const size_t radius) : m_center(center), m_radius(radius)
-    {
-    }
-
-    // TODO: need a method to get all cells within a circle (or even better- outer-most cells)
-
-    private:
-    Point m_center;
-    size_t m_radius;
-};
-} // namespace MESH
