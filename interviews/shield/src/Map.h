@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <ostream>
 #include <numeric>
+#include <string>
 #include <vector>
 
 #if 0
@@ -107,15 +108,15 @@ class CellStateMap
         return m_states[m_grid(xIdx, yIdx)];
     }
 
-    friend std::ostream& operator<<(std::ostream &os, const CellStateMap& states)
+    friend std::ostream& operator<<(std::ostream &osRef, const CellStateMap& states)
     {
         for (size_t yIdx = 0; yIdx < states.m_grid.numY(); ++yIdx) {
             for (size_t xIdx = 0; xIdx < states.m_grid.numX(); ++xIdx) {
-                os << states(xIdx, yIdx) << " ";
+                osRef << std::to_string((xIdx, yIdx)) << " ";
             }
-            os << std::endl;
+            osRef << std::endl;
         }
-        return os;
+        return osRef;
     };
 
     private:
@@ -124,7 +125,7 @@ class CellStateMap
 };
 
 #if 0
-// TODO: consider replacing below class with lambda function / functional programming.
+// TODO: consider replacing below class with a function object or lambda function / functional programming.
 class BoundaryCellStateAssigner
 {
     public:
@@ -165,7 +166,7 @@ class ConfigurationSpace
 
     void addObstacles(const std::vector<Circle>& obstacles)
     {
-        // TODO: inspect obstacles to ensure within grid
+        // TODO: inspect obstacles to ensure within grid??
         // add obstacles
         // add padding around obstacles
         for (const auto& obstacle : obstacles) {

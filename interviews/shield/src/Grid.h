@@ -93,30 +93,35 @@ class GridCircle
         const size_t xLimit = grid.numX() - 1;
         const size_t yLimit = grid.numY() - 1;
 
-        const size_t startY = c.y();
-        const size_t endY = c.y() + r;
-        for (size_t yIdx = startY; yIdx <= endY; ++yIdx) {
+        auto insideLeft{ [&](const size_t xIdx) { return c.x() >= xIdx; } };
+        auto insideRight{[&](const size_t xIdx) {return xIdx + c.x() <= xLimit;}};
+        auto insideBottom{[&](const size_t yIdx) {return c.y() >= yIdx;}};
+        auto insideTop{[&](const size_t yIdx) {return yIdx + c.y() <= yLimit;}};
+
+        // const size_t startY = c.y();
+        // const size_t endY = c.y() + r;
+        for (size_t yIdx = 0; yIdx <= r; ++yIdx) {
             const size_t xMaxSq = r * r - yIdx * yIdx;
-            const size_t startX = c.x();
             size_t xIdx = 0;
             while (xIdx * xIdx < xMaxSq) {
                 // TODO: only visit if within domain
                 // Quadrant I
-                if (xIdx <= xLimit && yIdx <= yLimit) {
-                    callback(xIdx, yIdx);
+                if (insideRight(xIdx) && insideTop(yIdx)) {
+                    callback(c.x() + xIdx, c.y() + yIdx);
                 }
                 // Quadrant II
-                if (c.x() >= xIdx && yIdx <= yLimit) {
-                    callback(c.x() - xIdx, yIdx);
+                if (insideLeft(xIdx) && insideTop(yIdx)) {
+                    callback(c.x() - xIdx, c.y() + yIdx);
                 }
                 // Quadrant III
-                if (xIdx <= xLimit && c.y() >= yIdx) {
-                    callback(xIdx, c.y() - yIdx);
-                }
-                // Quadrant IV
-                if (c.x() >= xIdx && c.y() >= yIdx) {
+                if (insideLeft(xIdx) && insideBottom(yIdx)) {
                     callback(c.x() - xIdx, c.y() - yIdx);
                 }
+                // Quadrant IV
+                if (insideRight(xIdx) && insideBottom(yIdx)) {
+                    callback(c.x() + xIdx, c.y() - yIdx);
+                }
+                ++xIdx;
             }
         }
     }
