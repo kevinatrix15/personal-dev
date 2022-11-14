@@ -180,10 +180,32 @@ class ConfigurationSpace
         }
     }
 
-    bool isValid(const Point& p) const
+    bool isInGrid(const Point& p) const
     {
-        return m_grid.contains(p) &&
+        return m_grid.contains(p);
+    }
+
+    bool isAccessible(const Point& p) const
+    {
+        return isInGrid(p) &&
             m_cellStates(p.x(), p.y()) == cell_state::FREE;
+    }
+
+    std::vector<Point> getAccessibleNbrs(const Point& p)
+    {
+        std::vector<Point> nbrs;
+        const size_t minX = p.x() > 0 ? p.x() - 1 : p.x();
+        const size_t minY = p.y() > 0 ? p.y() - 1 : p.y();
+        const size_t maxX = p.x() < m_grid.numX() - 1 ? p.x() + 1 : p.x();
+        const size_t maxY = p.y() < m_grid.numY() - 1 ? p.y() + 1 : p.y();
+        for (size_t yIdx = minY; yIdx <= maxY; ++yIdx) {
+            for (size_t xIdx = minX; xIdx <= maxX; ++xIdx) {
+                if (m_cellStates(xIdx, yIdx) == cell_state::FREE) {
+                    nbrs.emplace_back((xIdx, yIdx));
+                }
+            }
+        }
+        return nbrs;
     }
 
     friend std::ostream& operator<<(std::ostream& os, const ConfigurationSpace& space)

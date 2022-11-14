@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <ostream>
 
 class Point
 {
@@ -38,11 +39,16 @@ class Point
         return m_y;
     }
 
-    size_t distance(const Point& other) const
+    // TODO: consider making this distSq to avoid taking sqrt
+    double distance(const Point& other) const
     {
-        const int dx = static_cast<int>(m_x) - static_cast<int>(other.m_x);
-        const int dy = static_cast<int>(m_y) - static_cast<int>(other.m_y);
-        return static_cast<size_t>(sqrt(dx*dx + dy*dy));
+        const double dx = static_cast<double>(m_x) - static_cast<double>(other.m_x);
+        const double dy = static_cast<double>(m_y) - static_cast<double>(other.m_y);
+        return sqrt(dx*dx + dy*dy);
+    }
+
+    bool operator==(const Point& other) {
+        return m_x == other.m_x && m_y == other.m_y;
     }
 
     friend std::ostream& operator<<(std::ostream& os, const Point& p)

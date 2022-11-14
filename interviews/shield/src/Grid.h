@@ -33,7 +33,8 @@ class Grid
 
     // NOTE: we are using Point's here to store the x and y indices for convenience.
     // TODO: consider renaming Point to Cell???
-    bool contains(const Point& p) {
+    bool contains(const Point& p) const
+    {
         return p.x() < numX() && p.y() < numY();
     }
 

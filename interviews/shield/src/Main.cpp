@@ -7,7 +7,7 @@
 int main()
 {
   // TODO: make interactive assignment of grid size and robot radius
-  const Grid grid(150, 100);
+  const Grid grid(50, 25);
   // TODO: move grid here??
   ConfigurationSpace cSpace(grid, 3);
 
