@@ -45,6 +45,12 @@ class Point
         return static_cast<size_t>(sqrt(dx*dx + dy*dy));
     }
 
+    friend std::ostream& operator<<(std::ostream& os, const Point& p)
+    {
+        os << "(" << p.x() << ", " << p.y() << ")";
+        return os;
+    };
+
     private:
     size_t m_x;
     size_t m_y;

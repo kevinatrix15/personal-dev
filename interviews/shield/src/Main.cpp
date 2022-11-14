@@ -7,9 +7,9 @@
 int main()
 {
   // TODO: make interactive assignment of grid size and robot radius
-  const Grid grid(50, 25);
+  const Grid grid(150, 100);
   // TODO: move grid here??
-  ConfigurationSpace cSpace(grid, 1);
+  ConfigurationSpace cSpace(grid, 3);
 
   // TODO: make interactive assignment of obstacles
   std::vector<Circle> obstacles;
@@ -17,8 +17,9 @@ int main()
   obstacles.emplace_back(Circle({37, 13}, 6));
   obstacles.emplace_back(Circle({0, 0}, 4));
 
+  std::cout << cSpace;
+  std::cout << std::endl;
   cSpace.addObstacles(obstacles);
-
   std::cout << cSpace;
 
   return 0;

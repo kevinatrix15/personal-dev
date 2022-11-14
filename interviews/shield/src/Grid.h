@@ -31,6 +31,12 @@ class Grid
         return m_ny;
     }
 
+    // NOTE: we are using Point's here to store the x and y indices for convenience.
+    // TODO: consider renaming Point to Cell???
+    bool contains(const Point& p) {
+        return p.x() < numX() && p.y() < numY();
+    }
+
     // TODO: add convenience overloaded operators to map from 2D to 1D indexing
     // TODO: test this for correctness
     size_t operator()(const size_t xIdx, const size_t yIdx) const

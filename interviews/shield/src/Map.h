@@ -83,13 +83,14 @@ class ObstacleDistanceDetector
 };
 #endif
 
-enum class cell_state
+enum class cell_state: uint8_t
 {
     FREE,
     OBJECT,
     PADDED
 };
 
+// TODO: consider dissolving this into ConfigurationSpace class as it doesn't add much value...
 class CellStateMap
 {
     public:
@@ -108,15 +109,15 @@ class CellStateMap
         return m_states[m_grid(xIdx, yIdx)];
     }
 
-    friend std::ostream& operator<<(std::ostream &osRef, const CellStateMap& states)
+    friend std::ostream& operator<<(std::ostream& os, const CellStateMap& states)
     {
         for (size_t yIdx = 0; yIdx < states.m_grid.numY(); ++yIdx) {
             for (size_t xIdx = 0; xIdx < states.m_grid.numX(); ++xIdx) {
-                osRef << static_cast<int>(states(xIdx, yIdx)) << " ";
+                os << static_cast<int>(states(xIdx, yIdx)) << " ";
             }
-            osRef << std::endl;
+            os << std::endl;
         }
-        return osRef;
+        return os;
     };
 
     private:
@@ -179,7 +180,13 @@ class ConfigurationSpace
         }
     }
 
-    friend std::ostream& operator<<(std::ostream &os, const ConfigurationSpace& space)
+    bool isValid(const Point& p) const
+    {
+        return m_grid.contains(p) &&
+            m_cellStates(p.x(), p.y()) == cell_state::FREE;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const ConfigurationSpace& space)
     {
         return os << space.m_cellStates;
     };
