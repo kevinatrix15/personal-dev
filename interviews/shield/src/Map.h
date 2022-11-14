@@ -152,13 +152,13 @@ class BoundaryCellStateAssigner
 };
 #endif
 
-class ConfigurationSpace
+class ConfigurationSpace : public GridIndexer
 {
     public:
     // NOTE: we assume the robot radius an integer value, which can be zero as a special case
     // TODO: construct with a grid object
     ConfigurationSpace(const Grid& grid, const size_t robotRadius) :
-        m_grid(grid), m_robotRadius(robotRadius), m_cellStates(m_grid)
+        GridIndexer(grid.numX(), grid.numY()), m_grid(grid), m_robotRadius(robotRadius), m_cellStates(m_grid)
     {
         // initialize distance map based on distance to outer boundaries??
         // BoundaryDistanceDetector::detect()
@@ -180,6 +180,7 @@ class ConfigurationSpace
         }
     }
 
+    // TODO: move Grid::contains() into GridIndexer, and just use that directly here
     bool isInGrid(const Point& p) const
     {
         return m_grid.contains(p);
@@ -201,7 +202,7 @@ class ConfigurationSpace
         for (size_t yIdx = minY; yIdx <= maxY; ++yIdx) {
             for (size_t xIdx = minX; xIdx <= maxX; ++xIdx) {
                 if (m_cellStates(xIdx, yIdx) == cell_state::FREE) {
-                    nbrs.emplace_back((xIdx, yIdx));
+                    nbrs.emplace_back(Point(xIdx, yIdx));
                 }
             }
         }
@@ -260,6 +261,7 @@ class ConfigurationSpace
         // TODO: replace with for_each and lambda?
         for (const size_t yIdx : rows) {
             for (const size_t xIdx : cols) {
+                // TODO: fix this after refactoring () overload
                 m_cellStates(xIdx, yIdx) = cell_state::PADDED;
             }
         }

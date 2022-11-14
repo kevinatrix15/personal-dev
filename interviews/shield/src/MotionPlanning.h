@@ -3,26 +3,40 @@
 #include "Point.h"
 #include "Map.h"
 
+#include <limits>
 #include <iostream>
 #include <queue>
 
-using WeightPair = std::Pair<double, Point>;
+const double UNSET_VAL = std::numeric_limits<double>::max();
+const size_t UNSET_IDX = std::numeric_limits<size_t>::max();
+
+// stores {fCost, Point}
+using CostPoint = std::Pair<double, Point>;
 
 struct Node
 {
     public:
-    Node(const Point& p, const Point& goal, Node* parent) :
-        position(p), parent(parent)
+    // NOTE: we initialize the parent position to itself
+    Node() : pos(UNSET_IDX, UNSET_IDX), parentPos(UNSET_IDX, UNSET_IDX), gCost(UNSET_VAL), hCost(UNSET_VAL), fCost(UNSET_VAL)
     {
-        // assign the costs
-        gCost = parent ? parent->gCost + 1.0 : 0.0;
-        hCost = position.distance(goal);
-        // TODO: does this need to be set to 0.0 for root node?
-        fCost = gCost + hCost;
+        // do nothing
     }
 
-    Point position;
-    Node* parent;
+    Node(const Point& p, const Point& parentPos) :
+        pos(p), parentPos(parentPos)
+    {
+        // do nothing
+    }
+
+    void updateCosts(const Point& goal, const double parentGCost)
+    {
+        gCost = parentGCost + 1.0;
+        hCost = pos.distance(goal)
+        fCost = gCost + hCost
+    }
+
+    Point pos;
+    Point parentPos;
 
     // gCost, hCost, fCost
     double gCost;
@@ -32,10 +46,49 @@ struct Node
     private:
 };
 
+template<typename T>
+class DataMap : public GridIndexer
+{
+    public:
+    DataMap(const std::pair<size_t, size_t>& shape) : GridIndexer(shape), m_data(size())
+    {
+        // do nothing
+    }
+
+    DataMap(const std::pair<size_t, size_t>& shape, const T& initVal) :
+        GridIndexer(shape), m_data(size(), initVal)
+    {
+        // do nothing
+    }
+
+    T operator()(const size_t xIdx, const size_t yIdx) const
+    {
+        return m_data[GridIndexer::(xIdx, yIdx)];
+    }
+
+    T fromPoint(const Point& p) const
+    {
+        return (p.x(), p.y());
+    }
+
+    T& operator()(const size_t xIdx, const size_t yIdx)
+    {
+        return m_data[GridIndexer::(xIdx, yIdx)];
+    }
+
+    T& fromPoint(const Point& p)
+    {
+        return (p.x(), p.y());
+    }
+
+    private:
+    std::vector<T> m_data;
+};
+
 class AStar
 {
     public:
-    explicit AStar(const ConfigurationSpace* cSpace) : m_cSpace(cSpace)
+    explicit AStar(const ConfigurationSpace& cSpace) : m_cSpace(cSpace)
     {
         // do nothing
     }
@@ -45,7 +98,7 @@ class AStar
         // helper lambdas
         auto isGoal{ [&](const Point& p) { return goal == p; } };
 
-        auto calcHCost{ [&](const WeightPair& p) { return p.second.distance(goal); } };
+        auto calcHCost{ [&](const CostPoint& p) { return p.second.distance(goal); } };
 
         // choosing not to throw an exception to allow program to continue with
         // new user-provided inputs
@@ -55,6 +108,7 @@ class AStar
 
         if (isGoal(start)) {
             std::cout << "Start position " << start << " is already at goal" << std::endl;
+            return std::vector<Point>();
         }
 
         // NOTE / WARNING: watch out for euclidean distance on ints with flooring of diagonal distance calculation
@@ -71,58 +125,111 @@ class AStar
 
         // use a priority queue as a min-heap with smallest f-weight at the top
         // open cells are the un-visited cells
-        std::priority_queue<Node, std::vector<Node>,
-            [](const Node& n1, const Node& n2) {return n1.fCost < n2.fCost}> unexploredNodes;
-        // std::priority_queue<WeightPair, std::vector<WeightPair>, std::greater<WeightPair>> openCells;
+        std::priority_queue<CostPoint, std::vector<CostPoint>,
+            [](const CostPoint& c1, const CostPoint& c2) {return c1.first < c2.first}> unexploredCostPoints;
 
-        // TODO: create method to get cell's neighbors
-        // TODO: create vector of Nodes
-        std::vector<Node> mapData()
-        // check if valid
-            // check if destination
-
-        // TODO: create a convenient way to access shape and do 2D->1D indexing
-        std::vector<bool> exploredNodes(m_cSpace.size(), false);
-
-        // - put starting node on the open list (with f = 0)
-        Node startNode(start, goal, nullptr);
-        unexploredNodes.emplace(startNode);
-        // - while !openList.empty():
-        while (!unexploredNodes.empty()) {
-            // 1. find the node with smallest f on the open list and name it 'q'
-            Node q = unexploredNodes.top(); 
-
-            // 2. remove q from the open list and push into the closed
-            unexploredNodes.pop();
-
-            // 3. produce q's 8 descendents and set q as their parent
-            // TODO: decide where to implement the getNeighbors()
-            // TODO: as part of this, set the parent to q???
-            // TODO: could this take into account accessible cells?
-            std::vector<Point> childrenPts = m_cSpace.getAccessibleNbrs(q.position);
-
-            // 4. for each descendent:
-            for (const Point& pt : childrenPts) {
-                //      - if successor is the goal, stop
-                if (pt == goal) {
-                    // update path
-                    // return path
-                }
-
-                // create new node, calculating costs upon construction
-                Node child(pt, goal, q);
-
-                // TODO: below checks before adding to unexplored
-                //      - skip this successor if a node in the open list with same location has a lower f
-                //      - skip this successor if a node in the closed list with same location has a lower f
-                //      - Otherwise, add successor to the open list
-                unexploredNodes.emplace(child);
+        DataMap nodeMap<Node>(m_cSpace.shape());
+        Point pCurr;
+        for (size_t yIdx = 0; yIdx < nodeMap.numY(); ++yIdx) {
+            for (size_t xIdx = 0; xIdx < nodeMap.numX(); ++xIdx) {
+                pCurr = Point(xIdx, yIdx);
+                // NOTE: we initialize each node with its parent position set to itself
+                nodeMap(xIdx, yIdx) = Node(pCurr, pCurr);
             }
-            // - push q into the closed list and end the while loop
-            exploredNodes(q.position.x(), q.position.y()) = true;
         }
 
+        // Map indicating tracking which nodes have been explored in the search
+        DataMap exploredNodes<bool>(m_cSpace.size(), false);
+
+        // - put starting node on the open list (with f = 0)
+        // NOTE: startNode's fCost = 0.0
+        Node startNode = nodeMap.fromPoint(start);
+        CostPoint startCP{startNode.fCost, start};
+        unexploredNodes.emplace(startCP);
+
+        while (!unexploredNodes.empty()) {
+            CostPoint q = unexploredNodes.top();
+            const qFCost = q.first;
+            const qPos = q.second;
+            unexploredNodes.pop();
+            exploredNodes(qPos) = true;
+            // m_cSpace.getAccessibleNbrs(q.second);
+            const std::vector<Point> nbrPts = m_cSpace.getAccessibleNbrs(qPos);
+            for (const auto& nbrPt : nbrPts) {
+                if (nbrPt == goal) {
+                    // create path
+                    // return
+                }
+                // If we haven't explored this point yet
+                if (!exploredNodes(nbrPt)) {
+                    Node nbr(nbrPt, qPos);
+                    const double parentGCost = nodeMap(qPos).gCost;
+                    nbr.updateCosts(goal, parentGCost);
+
+                    // if not on the open list, add to open list, and set current cell as the parent
+                    // nbr.parent = q.second
+                    //         OR
+                    // if on the open list, check if has a lower f
+                    if (nodeMap(nbr.pos).fCost == UNSET_VAL ||
+                        nodeMap(nbr.pos).fCost > nbr.fCost) {
+                            unexploredNodes.emplace({nbr.fCost, nbr.pos});
+                            nodeMap(nbr.pos) = nbr;
+                    }
+                }
+            }
+
+        }
     }
+    // Data structure considerations:
+    // Closed list
+    // operations:
+    // - check if a node with same location (index) has a smaller f
+    //      * implies storing node data, including at least position and f
+    //
+    // Open list
+    // operations:
+    // - readily get the node with smallest 'f'
+    // - add children (emplace())
+    // - remove top candidate (pop())
+    // - check for other nodes with same position, compare whether have smaller 'f'
+
+    // operations:
+    // initialize all nodes in nodeMap with invalid (UNSET) values
+
+    // set nodeMap(start):
+    //  f = 0
+    //  g = 0
+    //  h = 0
+    //  parent = start (x(), y())
+
+    // put starting cell in unexploredNodes (f = 0)
+
+    // while (!unexploredNodes.empty()) {
+        // CostPoint q = unexploredNodes.top();
+        // unexploredNodes.pop();
+        // exploredNodes(q.second) = true;
+        // m_cSpace.getAccessibleNbrs(q.second);
+        // if (isDestination) {
+            // create path
+        // }
+        // if (!exploredNodes(q.second)) {
+            // nbr.g = q.g + 1.0
+            // nbr.h = nbr.pos.distance(goal)
+            // nbr.f = nbr.g + nbr.h
+
+            // if not on the open list, add to open list, and set current cell as the parent
+            // nbr.parent = q.second
+            //         OR
+            // if on the open list, check if has a lower f
+            // if (nodeMap(nbr.pos) == UNSET || nodeMap(nbr.pos) > nbr.f) {
+                // unexploredNodes.emplace(nbr.f, nbr.pos);
+
+                // update the nodeMap
+                // nodeMap(nbr.pos) = nbr;
+            // }
+        // }
+
+    // }
 
     private:
     ConfigurationSpace m_cSpace;
