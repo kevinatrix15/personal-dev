@@ -7,17 +7,18 @@
 #include <iostream>
 #include <queue>
 
-const double UNSET_VAL = std::numeric_limits<double>::max();
-const size_t UNSET_IDX = std::numeric_limits<size_t>::max();
+constexpr double UNSET_VAL = std::numeric_limits<double>::max();
+constexpr size_t _UNSET_IDX = std::numeric_limits<size_t>::max();
+const Point UNSET_PT(_UNSET_IDX, _UNSET_IDX);
 
 // stores {fCost, Point}
-using CostPoint = std::Pair<double, Point>;
+using CostPoint = std::pair<double, Point>;
 
 struct Node
 {
     public:
     // NOTE: we initialize the parent position to itself
-    Node() : pos(UNSET_IDX, UNSET_IDX), parentPos(UNSET_IDX, UNSET_IDX), gCost(UNSET_VAL), hCost(UNSET_VAL), fCost(UNSET_VAL)
+    Node() : pos(UNSET_PT), parentPos(UNSET_PT), gCost(UNSET_VAL), hCost(UNSET_VAL), fCost(UNSET_VAL)
     {
         // do nothing
     }
@@ -31,8 +32,8 @@ struct Node
     void updateCosts(const Point& goal, const double parentGCost)
     {
         gCost = parentGCost + 1.0;
-        hCost = pos.distance(goal)
-        fCost = gCost + hCost
+        hCost = pos.distance(goal);
+        fCost = gCost + hCost;
     }
 
     Point pos;
@@ -46,45 +47,6 @@ struct Node
     private:
 };
 
-template<typename T>
-class DataMap : public GridIndexer
-{
-    public:
-    DataMap(const std::pair<size_t, size_t>& shape) : GridIndexer(shape), m_data(size())
-    {
-        // do nothing
-    }
-
-    DataMap(const std::pair<size_t, size_t>& shape, const T& initVal) :
-        GridIndexer(shape), m_data(size(), initVal)
-    {
-        // do nothing
-    }
-
-    T operator()(const size_t xIdx, const size_t yIdx) const
-    {
-        return m_data[GridIndexer::(xIdx, yIdx)];
-    }
-
-    T fromPoint(const Point& p) const
-    {
-        return (p.x(), p.y());
-    }
-
-    T& operator()(const size_t xIdx, const size_t yIdx)
-    {
-        return m_data[GridIndexer::(xIdx, yIdx)];
-    }
-
-    T& fromPoint(const Point& p)
-    {
-        return (p.x(), p.y());
-    }
-
-    private:
-    std::vector<T> m_data;
-};
-
 class AStar
 {
     public:
@@ -95,18 +57,13 @@ class AStar
 
     std::vector<Point> searchPath(const Point& start, const Point& goal) const
     {
-        // helper lambdas
-        auto isGoal{ [&](const Point& p) { return goal == p; } };
-
-        auto calcHCost{ [&](const CostPoint& p) { return p.second.distance(goal); } };
-
         // choosing not to throw an exception to allow program to continue with
         // new user-provided inputs
         if (!isValidStartGoal(start, goal)) {
             return std::vector<Point>();
         }
 
-        if (isGoal(start)) {
+        if (start == goal) {
             std::cout << "Start position " << start << " is already at goal" << std::endl;
             return std::vector<Point>();
         }
@@ -125,21 +82,16 @@ class AStar
 
         // use a priority queue as a min-heap with smallest f-weight at the top
         // open cells are the un-visited cells
-        std::priority_queue<CostPoint, std::vector<CostPoint>,
-            [](const CostPoint& c1, const CostPoint& c2) {return c1.first < c2.first}> unexploredCostPoints;
+        auto comp = [&](const CostPoint& c1, const CostPoint& c2) {
+                return c1.first < c2.first;
+        };
+        std::priority_queue<CostPoint, std::vector<CostPoint>, decltype(comp)> unexploredNodes(comp);
 
-        DataMap nodeMap<Node>(m_cSpace.shape());
-        Point pCurr;
-        for (size_t yIdx = 0; yIdx < nodeMap.numY(); ++yIdx) {
-            for (size_t xIdx = 0; xIdx < nodeMap.numX(); ++xIdx) {
-                pCurr = Point(xIdx, yIdx);
-                // NOTE: we initialize each node with its parent position set to itself
-                nodeMap(xIdx, yIdx) = Node(pCurr, pCurr);
-            }
-        }
+        const std::pair<size_t, size_t> mapShape = m_cSpace.shape();
+        DataMap<Node> nodeMap(mapShape);
 
         // Map indicating tracking which nodes have been explored in the search
-        DataMap exploredNodes<bool>(m_cSpace.size(), false);
+        DataMap<bool> exploredNodes(mapShape, false);
 
         // - put starting node on the open list (with f = 0)
         // NOTE: startNode's fCost = 0.0
@@ -149,10 +101,10 @@ class AStar
 
         while (!unexploredNodes.empty()) {
             CostPoint q = unexploredNodes.top();
-            const qFCost = q.first;
-            const qPos = q.second;
+            const double qFCost = q.first;
+            const Point qPos = q.second;
             unexploredNodes.pop();
-            exploredNodes(qPos) = true;
+            exploredNodes.fromPoint(qPos) = true;
             // m_cSpace.getAccessibleNbrs(q.second);
             const std::vector<Point> nbrPts = m_cSpace.getAccessibleNbrs(qPos);
             for (const auto& nbrPt : nbrPts) {
@@ -161,19 +113,19 @@ class AStar
                     // return
                 }
                 // If we haven't explored this point yet
-                if (!exploredNodes(nbrPt)) {
+                if (!exploredNodes.fromPoint(nbrPt)) {
                     Node nbr(nbrPt, qPos);
-                    const double parentGCost = nodeMap(qPos).gCost;
+                    const double parentGCost = nodeMap.fromPoint(qPos).gCost;
                     nbr.updateCosts(goal, parentGCost);
 
                     // if not on the open list, add to open list, and set current cell as the parent
                     // nbr.parent = q.second
                     //         OR
                     // if on the open list, check if has a lower f
-                    if (nodeMap(nbr.pos).fCost == UNSET_VAL ||
-                        nodeMap(nbr.pos).fCost > nbr.fCost) {
-                            unexploredNodes.emplace({nbr.fCost, nbr.pos});
-                            nodeMap(nbr.pos) = nbr;
+                    if (nodeMap.fromPoint(nbr.pos).fCost == UNSET_VAL ||
+                        nodeMap.fromPoint(nbr.pos).fCost > nbr.fCost) {
+                            unexploredNodes.emplace(std::make_pair(nbr.fCost, nbr.pos));
+                            nodeMap.fromPoint(nbr.pos) = nbr;
                     }
                 }
             }
@@ -202,11 +154,11 @@ class AStar
     //  h = 0
     //  parent = start (x(), y())
 
-    // put starting cell in unexploredNodes (f = 0)
+    // put starting cell in unexplored (f = 0)
 
-    // while (!unexploredNodes.empty()) {
-        // CostPoint q = unexploredNodes.top();
-        // unexploredNodes.pop();
+    // while (!unexplored.empty()) {
+        // CostPoint q = unexplored.top();
+        // unexplored.pop();
         // exploredNodes(q.second) = true;
         // m_cSpace.getAccessibleNbrs(q.second);
         // if (isDestination) {
@@ -222,7 +174,7 @@ class AStar
             //         OR
             // if on the open list, check if has a lower f
             // if (nodeMap(nbr.pos) == UNSET || nodeMap(nbr.pos) > nbr.f) {
-                // unexploredNodes.emplace(nbr.f, nbr.pos);
+                // unexplored.emplace(nbr.f, nbr.pos);
 
                 // update the nodeMap
                 // nodeMap(nbr.pos) = nbr;
@@ -234,14 +186,14 @@ class AStar
     private:
     ConfigurationSpace m_cSpace;
 
-    bool isValidStartGoal(const Point& start, const Point& goal)
+    bool isValidStartGoal(const Point& start, const Point& goal) const
     {
-        if (!m_cSpace.isInGrid(start)) {
+        if (!m_cSpace.contains(start)) {
             std::cout << "Start point " << start << " is not in the grid" << std::endl;
             return false;
         }
 
-        if (!m_cSpace.isInGrid(goal)) {
+        if (!m_cSpace.contains(goal)) {
             std::cout << "Goal point " << start << " is not in the grid" << std::endl;
             return false;
         }

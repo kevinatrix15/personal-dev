@@ -19,8 +19,7 @@ class GridIndexer
         // do nothing
     }
 
-    // TODO: rename this to xyIdxTo1D to make harder to misuse...
-    size_t operator()(const size_t xIdx, const size_t yIdx) const
+    size_t idxFrom(const size_t xIdx, const size_t yIdx) const
     {
         assert(xIdx < m_nx);
         assert(yIdx < m_ny);
@@ -52,6 +51,13 @@ class GridIndexer
         return std::make_pair(numX(), numY());
     }
 
+    // NOTE: we are using Point's here to store the x and y indices for convenience.
+    // TODO: consider renaming Point to Cell???
+    bool contains(const Point& p) const
+    {
+        return p.x() < numX() && p.y() < numY();
+    }
+
     private:
     size_t m_nx;
     size_t m_ny;
@@ -66,13 +72,6 @@ class Grid : public GridIndexer
         // the grid should have non-zero dimensions in both axes
         assert(numX() > 0);
         assert(numY() > 0);
-    }
-
-    // NOTE: we are using Point's here to store the x and y indices for convenience.
-    // TODO: consider renaming Point to Cell???
-    bool contains(const Point& p) const
-    {
-        return p.x() < numX() && p.y() < numY();
     }
 };
 

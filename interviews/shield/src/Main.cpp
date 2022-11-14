@@ -24,7 +24,7 @@ int main()
   std::cout << cSpace;
 
   AStar search(cSpace);
-  const std::vector<Point> path = searchPath({0,0}, {grid.numX()-1, grid.numY()-1});
+  const std::vector<Point> path = search.searchPath({0,0}, {grid.numX()-1, grid.numY()-1});
 
   return 0;
 }

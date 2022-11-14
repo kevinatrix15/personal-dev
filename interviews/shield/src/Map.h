@@ -9,80 +9,6 @@
 #include <string>
 #include <vector>
 
-#if 0
-class DistanceMap
-{
-    public:
-    DistanceMap(const Grid& grid) : m_grid(grid), m_distances(grid.size())
-    {
-        // do nothing
-    }
-
-    size_t operator()(const size_t xIdx, const size_t yIdx) const
-    {
-        return m_distances[m_grid(xIdx, yIdx)];
-    }
-
-    size_t& operator()(const size_t xIdx, const size_t yIdx)
-    {
-        return m_distances[m_grid(xIdx, yIdx)];
-    }
-
-    // TODO: consider adding a method to print output to stream for writing / visualizing
-    // friend std::ostream& operator<<(std::ostream &stream, vect3D const &p) { return stream << "(" << p.x << ", " << p.y << ", " << p.z << ")" << std::flush; };
-
-
-    private:
-    Grid m_grid;
-    std::vector<size_t> m_distances;
-};
-
-// TODO: consider replacing below class with lambda function / functional programming.
-class BoundaryDistanceDetector
-{
-    public:
-    // TODO: consider returning the modified DistanceMap to follow functional programming /
-    // enable piping
-    static void detect(const Grid& grid, DistanceMap& distMapRef)
-    {
-        // TODO: define a lambda to find minimum distance to nearest edge
-        constexpr size_t minBoundaryDist = [] (const size_t xIdx, const size_t yIdx) {
-            const size_t minX = min(xIdx + 1, grid.numX() - xIdx);
-            const size_t minY = min(yIdx + 1, grid.numY() - yIdx);
-            return min(minX, minY);
-        }
-
-        // TODO: consider a way to iterate over DistanceMap's data without a grid
-        // and explicit for loops...
-        for (size_t yIdx = 0; yIdx < grid.numY(); ++yIdx) {
-            for (size_t xIdx = 0; xIdx < grid.numX(); ++xIdx) {
-                distMapRef(xIdx, yIdx) = minBoundaryDist(xIdx, yIdx);
-            }
-        }
-    }
-};
-
-class ObstacleDistanceDetector
-{
-    public:
-    // TODO: consider returning the modified DistanceMap to follow functional programming /
-    // enable piping
-    // TODO: make an Obstacles class to make type polymorphic
-    //  + getOuterCells()- method to get outer-most grid cells
-    static void detect(const Grid& grid, const std::vector<Circle>& obstacles, DistanceMap& distMapRef)
-    {
-        for (const Circle& obs : obstacles) {
-            // create a queue
-            // get outer-cells in current obstacle
-            // add outer-cells
-            // perform BFS until no longer overwrite DistanceMap values with lower values
-        }
-    }
-
-    private:
-};
-#endif
-
 enum class cell_state: uint8_t
 {
     FREE,
@@ -90,8 +16,61 @@ enum class cell_state: uint8_t
     PADDED
 };
 
+template<typename T>
+class DataMap : public GridIndexer
+{
+    public:
+    DataMap(const std::pair<size_t, size_t>& shape) : GridIndexer(shape), m_data(size())
+    {
+        // do nothing
+    }
+
+    DataMap(const std::pair<size_t, size_t>& shape, const T& initVal) :
+        GridIndexer(shape), m_data(size(), initVal)
+    {
+        // do nothing
+    }
+
+    T operator()(const size_t xIdx, const size_t yIdx) const
+    {
+        return m_data[GridIndexer::idxFrom(xIdx, yIdx)];
+    }
+
+    T fromPoint(const Point& p) const
+    {
+        return (p.x(), p.y());
+    }
+
+    T& operator()(const size_t xIdx, const size_t yIdx)
+    {
+        return m_data[GridIndexer::idxFrom(xIdx, yIdx)];
+    }
+
+    T& fromPoint(const Point& p)
+    {
+        return (p.x(), p.y());
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const DataMap& dataMap)
+    {
+        for (size_t yIdx = 0; yIdx < dataMap.numY(); ++yIdx) {
+            for (size_t xIdx = 0; xIdx < dataMap.numX(); ++xIdx) {
+                // TODO: decide how to handle casting here as T may not have
+                // a valid compatible conversion for <<
+                os << static_cast<T>(dataMap(xIdx, yIdx)) << " ";
+            }
+            os << std::endl;
+        }
+        return os;
+    };
+
+    private:
+    std::vector<T> m_data;
+};
+
+#if 0
 // TODO: consider dissolving this into ConfigurationSpace class as it doesn't add much value...
-class CellStateMap
+class CellStateMap : public GridIndexer
 {
     public:
     explicit CellStateMap(const Grid& grid) : m_grid(grid), m_states(grid.size(), cell_state::FREE)
@@ -124,32 +103,6 @@ class CellStateMap
     Grid m_grid;
     std::vector<cell_state> m_states;
 };
-
-#if 0
-// TODO: consider replacing below class with a function object or lambda function / functional programming.
-class BoundaryCellStateAssigner
-{
-    public:
-    // TODO: consider returning the modified DistanceMap to follow functional programming /
-    // enable piping (with move assignment operations)
-    static void assign(const Grid& grid, CellStateMap& stateMapRef)
-    {
-        // TODO: define a lambda to find minimum distance to nearest edge
-        constexpr size_t minBoundaryDist = [] (const size_t xIdx, const size_t yIdx) {
-            const size_t minX = min(xIdx + 1, grid.numX() - xIdx);
-            const size_t minY = min(yIdx + 1, grid.numY() - yIdx);
-            return min(minX, minY);
-        }
-
-        // TODO: consider a way to iterate over DistanceMap's data without a grid
-        // and explicit for loops...
-        for (size_t yIdx = 0; yIdx < grid.numY(); ++yIdx) {
-            for (size_t xIdx = 0; xIdx < grid.numX(); ++xIdx) {
-                distMapRef(xIdx, yIdx) = minBoundaryDist(xIdx, yIdx);
-            }
-        }
-    }
-};
 #endif
 
 class ConfigurationSpace : public GridIndexer
@@ -158,10 +111,10 @@ class ConfigurationSpace : public GridIndexer
     // NOTE: we assume the robot radius an integer value, which can be zero as a special case
     // TODO: construct with a grid object
     ConfigurationSpace(const Grid& grid, const size_t robotRadius) :
-        GridIndexer(grid.numX(), grid.numY()), m_grid(grid), m_robotRadius(robotRadius), m_cellStates(m_grid)
+        GridIndexer(grid.numX(), grid.numY()), m_grid(grid), m_robotRadius(robotRadius),
+        m_cellStates(std::make_pair(grid.numX(), grid.numY()), cell_state::FREE)
     {
-        // initialize distance map based on distance to outer boundaries??
-        // BoundaryDistanceDetector::detect()
+        // set the cell state to 'padded' to account for robot radius
         assignBoundaryCellStates();
     }
 
@@ -180,19 +133,13 @@ class ConfigurationSpace : public GridIndexer
         }
     }
 
-    // TODO: move Grid::contains() into GridIndexer, and just use that directly here
-    bool isInGrid(const Point& p) const
-    {
-        return m_grid.contains(p);
-    }
-
     bool isAccessible(const Point& p) const
     {
-        return isInGrid(p) &&
+        return contains(p) &&
             m_cellStates(p.x(), p.y()) == cell_state::FREE;
     }
 
-    std::vector<Point> getAccessibleNbrs(const Point& p)
+    std::vector<Point> getAccessibleNbrs(const Point& p) const
     {
         std::vector<Point> nbrs;
         const size_t minX = p.x() > 0 ? p.x() - 1 : p.x();
@@ -218,7 +165,7 @@ class ConfigurationSpace : public GridIndexer
     Grid m_grid;
     // robot radius, in cells
     size_t m_robotRadius;
-    CellStateMap m_cellStates;
+    DataMap<cell_state> m_cellStates;
 
     void assignBoundaryCellStates()
     {
