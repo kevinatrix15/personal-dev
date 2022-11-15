@@ -25,6 +25,12 @@ class DataMap : public GridIndexer
         // do nothing
     }
 
+    DataMap(const std::pair<size_t, size_t>& shape, const std::vector<T>& data) :
+      GridIndexer(shape), m_data(data)
+    {
+        // do nothing
+    }
+
     DataMap(const std::pair<size_t, size_t>& shape, const T& initVal) :
         GridIndexer(shape), m_data(size(), initVal)
     {
@@ -73,7 +79,7 @@ class DataMap : public GridIndexer
 class CellStateMap : public GridIndexer
 {
     public:
-    explicit CellStateMap(const Grid& grid) : m_grid(grid), m_states(grid.size(), cell_state::FREE)
+    CellStateMap(const Grid& grid) : m_grid(grid), m_states(grid.size(), cell_state::FREE)
     {
         // do nothing
     }
@@ -109,24 +115,33 @@ class ConfigurationSpace : public GridIndexer
 {
     public:
     // NOTE: we assume the robot radius an integer value, which can be zero as a special case
-    // TODO: construct with a grid object
-    ConfigurationSpace(const Grid& grid, const size_t robotRadius) :
-        GridIndexer(grid.numX(), grid.numY()), m_grid(grid), m_robotRadius(robotRadius),
-        m_cellStates(std::make_pair(grid.numX(), grid.numY()), cell_state::FREE)
+    ConfigurationSpace(const size_t numX, const size_t numY, const size_t robotRadius) :
+        GridIndexer(numX, numY), m_robotRadius(robotRadius),
+        m_cellStates(std::make_pair(numX, numY), cell_state::FREE)
     {
         // set the cell state to 'padded' to account for robot radius
         assignBoundaryCellStates();
     }
 
+    ConfigurationSpace(const DataMap<cell_state>& cellStates, const size_t robotRadius) :
+      GridIndexer(cellStates), m_robotRadius(robotRadius), m_cellStates(cellStates)
+    {
+        assignBoundaryCellStates();
+    }
+
+    size_t robotRadius() const
+    {
+      return m_robotRadius;
+    }
+
     void addObstacles(const std::vector<Circle>& obstacles)
     {
-        // TODO: inspect obstacles to ensure within grid??
         // add obstacles
         // add padding around obstacles
         for (const auto& obstacle : obstacles) {
             // extend obstacles with robot radius
             const Circle padded(obstacle.center(), obstacle.radius() + m_robotRadius);
-            GridCircle::visit(padded, m_grid,[this](const size_t xIdx, const size_t yIdx) {
+            GridCircle::visit(padded, *this, [this](const size_t xIdx, const size_t yIdx) {
                 m_cellStates.at(xIdx, yIdx) = cell_state::OBJECT;
             }
             );
@@ -143,8 +158,8 @@ class ConfigurationSpace : public GridIndexer
         std::vector<Point> nbrs;
         const size_t minX = p.x() > 0 ? p.x() - 1 : p.x();
         const size_t minY = p.y() > 0 ? p.y() - 1 : p.y();
-        const size_t maxX = p.x() < m_grid.numX() - 1 ? p.x() + 1 : p.x();
-        const size_t maxY = p.y() < m_grid.numY() - 1 ? p.y() + 1 : p.y();
+        const size_t maxX = p.x() < numX() - 1 ? p.x() + 1 : p.x();
+        const size_t maxY = p.y() < numY() - 1 ? p.y() + 1 : p.y();
         for (size_t yIdx = minY; yIdx <= maxY; ++yIdx) {
             for (size_t xIdx = minX; xIdx <= maxX; ++xIdx) {
                 if (m_cellStates.at(xIdx, yIdx) == cell_state::FREE) {
@@ -161,7 +176,6 @@ class ConfigurationSpace : public GridIndexer
     };
 
     private:
-    Grid m_grid;
     // robot radius, in cells
     size_t m_robotRadius;
     DataMap<cell_state> m_cellStates;
@@ -170,23 +184,23 @@ class ConfigurationSpace : public GridIndexer
     {
         // TODO: add visitRowsAndCols() to Grid class, providing a range
         // TODO: consider moving the below into the Grid class for specialized iteration
-        std::vector<size_t> allCols(m_grid.numX());
+        std::vector<size_t> allCols(numX());
         std::iota(allCols.begin(), allCols.end(), 0);
 
-        std::vector<size_t> allRows(m_grid.numY());
+        std::vector<size_t> allRows(numY());
         std::iota(allRows.begin(), allRows.end(), 0);
 
         std::vector<size_t> bottomRows(m_robotRadius);
         std::iota(bottomRows.begin(), bottomRows.end(), 0);
 
         std::vector<size_t> topRows(m_robotRadius);
-        std::iota(topRows.begin(), topRows.end(), m_grid.numY() - m_robotRadius);
+        std::iota(topRows.begin(), topRows.end(), numY() - m_robotRadius);
 
         std::vector<size_t> leftCols(m_robotRadius);
         std::iota(leftCols.begin(), leftCols.end(), 0);
 
         std::vector<size_t> rightCols(m_robotRadius);
-        std::iota(rightCols.begin(), rightCols.end(), m_grid.numX() - m_robotRadius);
+        std::iota(rightCols.begin(), rightCols.end(), numX() - m_robotRadius);
 
         // bottom rows
         padRowsAndCols(bottomRows, allCols);

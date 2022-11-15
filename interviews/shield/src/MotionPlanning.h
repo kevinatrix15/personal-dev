@@ -103,7 +103,6 @@ class AStar
 
         while (!unexploredNodes.empty()) {
             CostPoint q = unexploredNodes.top();
-            const double qFCost = q.first;
             const Point qPos = q.second;
             unexploredNodes.pop();
             exploredNodes.at(qPos) = true;

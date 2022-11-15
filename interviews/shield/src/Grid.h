@@ -19,6 +19,11 @@ class GridIndexer
         // do nothing
     }
 
+    GridIndexer(const GridIndexer& other) : m_nx(other.m_nx), m_ny(other.m_ny)
+    {
+      // do nothing
+    }
+
     size_t idxFrom(const size_t xIdx, const size_t yIdx) const
     {
         assert(xIdx < m_nx);
@@ -104,18 +109,8 @@ using Callback = std::function<void(const size_t xIdx, const size_t yIdx)>;
 class GridCircle
 {
     public:
-    #if 0
-    static void visitRing(const Point& center, const size_t r0, const size_t r1, const Grid& grid)
-    {
-        const size_t startY = center.y() + r0;
-        const size_t endY = center.y() + r1;
-        for (size_t yIdx = startY; yIdx <= endY; ++yIdx) {
-            const size_t startX = 
-        }
-    }
-    #endif
 
-    static void visit(const Circle& circle, const Grid& grid, Callback callback)
+    static void visit(const Circle& circle, const GridIndexer& grid, Callback callback)
     {
         const size_t r = circle.radius();
         const Point c = circle.center();

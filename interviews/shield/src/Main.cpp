@@ -1,16 +1,19 @@
+#include "FileIO.h"
 #include "Grid.h"
 #include "Map.h"
 #include "MotionPlanning.h"
 
+#include <filesystem>
 #include <iostream>
 #include <vector>
 
+// TODO: add command line args for file path, etc.
 int main()
 {
   // TODO: make interactive assignment of grid size and robot radius
   const Grid grid(50, 25);
   // TODO: move grid here??
-  ConfigurationSpace cSpace(grid, 1);
+  ConfigurationSpace cSpace(50, 25, 1);
 
   // TODO: make interactive assignment of obstacles
   std::vector<Circle> obstacles;
@@ -24,6 +27,14 @@ int main()
   std::cout << std::endl;
   cSpace.addObstacles(obstacles);
   std::cout << cSpace;
+
+  // write map
+  const std::filesystem::path cSpaceFile("./output/config-space.txt");
+  SolutionWriter::write(cSpace, cSpaceFile);
+
+  // read map
+  ConfigurationSpace cSpace2 = SolutionWriter::read(cSpaceFile);
+  std::cout << cSpace2;
 
   AStar search(cSpace);
   const std::vector<Point> path = search.searchPath({2,2}, {grid.numX()-2, grid.numY()-2});
