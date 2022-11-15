@@ -83,7 +83,7 @@ class AStar
         // use a priority queue as a min-heap with smallest f-weight at the top
         // open cells are the un-visited cells
         auto comp = [&](const CostPoint& c1, const CostPoint& c2) {
-                return c1.first < c2.first;
+                return c1.first > c2.first;
         };
         std::priority_queue<CostPoint, std::vector<CostPoint>, decltype(comp)> unexploredNodes(comp);
 

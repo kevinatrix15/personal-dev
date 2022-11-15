@@ -22,7 +22,7 @@ int main()
 
   std::cout << cSpace;
   std::cout << std::endl;
-  // cSpace.addObstacles(obstacles);
+  cSpace.addObstacles(obstacles);
   std::cout << cSpace;
 
   AStar search(cSpace);
