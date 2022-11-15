@@ -52,6 +52,11 @@ class Point
         return m_x == other.m_x && m_y == other.m_y;
     }
 
+    bool operator!=(const Point& other) const
+    {
+        return !(*this == other);
+    }
+
     friend std::ostream& operator<<(std::ostream& os, const Point& p)
     {
         os << "(" << p.x() << ", " << p.y() << ")";

@@ -95,7 +95,9 @@ class AStar
 
         // - put starting node on the open list (with f = 0)
         // NOTE: startNode's fCost = 0.0
-        Node startNode = nodeMap.at(start);
+        Node startNode(start, start);
+        nodeMap.at(start) = startNode;
+
         CostPoint startCP{startNode.fCost, start};
         unexploredNodes.emplace(startCP);
 
@@ -109,8 +111,10 @@ class AStar
             const std::vector<Point> nbrPts = m_cSpace.getAccessibleNbrs(qPos);
             for (const auto& nbrPt : nbrPts) {
                 if (nbrPt == goal) {
-                    // create path
-                    // return
+                  std::cout << "Goal found!!!" << std::endl;
+                  Node nbr(nbrPt, qPos);
+                  nodeMap.at(nbr.pos) = nbr;
+                  return generatePath(nodeMap, goal);
                 }
                 // If we haven't explored this point yet
                 if (!exploredNodes.at(nbrPt)) {
@@ -131,6 +135,7 @@ class AStar
             }
 
         }
+        std::cout << "Goal not found... :(" << std::endl;
         return std::vector<Point>();
     }
     // Data structure considerations:
@@ -209,5 +214,18 @@ class AStar
             return false;
         }
       return true;
+    }
+
+    static std::vector<Point> generatePath(const DataMap<Node>& nodeMap, const Point& goal)
+    {
+      std::vector<Point> path;
+      path.emplace_back(goal);
+      Point next = nodeMap.at(goal).parentPos;
+      do {
+        path.emplace_back(next);
+        next = nodeMap.at(next).parentPos;
+      } while (next != nodeMap.at(next).parentPos);
+      std::reverse(path.begin(), path.end());
+      return path;
     }
 };
