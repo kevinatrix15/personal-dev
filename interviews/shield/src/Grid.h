@@ -28,7 +28,7 @@ class GridIndexer
 
     size_t idxFrom(const Point& p) const
     {
-        return (p.x(), p.y());
+        return idxFrom(p.x(), p.y());
     }
 
     size_t size() const

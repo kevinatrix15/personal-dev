@@ -7,7 +7,6 @@
 #include <ostream>
 #include <numeric>
 #include <string>
-#include <type_traits>
 #include <vector>
 
 enum class cell_state: uint8_t
@@ -17,11 +16,7 @@ enum class cell_state: uint8_t
     PADDED
 };
 
-// TODO: can Concepts be used below???
-// The below is necessary due to issue discussed here:
-// https://stackoverflow.com/questions/61157866/error-cannot-bind-non-const-lvalue-reference-of-type-bool-to-an-rvalue-of-ty
 template<typename T>
-using U = std::conditional_t<std::is_same_v<T, bool>, char, T>;
 class DataMap : public GridIndexer
 {
     public:
@@ -30,28 +25,28 @@ class DataMap : public GridIndexer
         // do nothing
     }
 
-    DataMap(const std::pair<size_t, size_t>& shape, const U& initVal) :
+    DataMap(const std::pair<size_t, size_t>& shape, const T& initVal) :
         GridIndexer(shape), m_data(size(), initVal)
     {
         // do nothing
     }
 
-    U at(const size_t xIdx, const size_t yIdx) const
+    T at(const size_t xIdx, const size_t yIdx) const
     {
         return m_data[GridIndexer::idxFrom(xIdx, yIdx)];
     }
 
-    U at(const Point& p) const
+    T at(const Point& p) const
     {
         return m_data[GridIndexer::idxFrom(p)];
     }
 
-    U& at(const size_t xIdx, const size_t yIdx)
+    typename std::vector<T>::reference at(const size_t xIdx, const size_t yIdx)
     {
         return m_data[GridIndexer::idxFrom(xIdx, yIdx)];
     }
 
-    U& at(const Point& p)
+    typename std::vector<T>::reference at(const Point& p)
     {
         return m_data[GridIndexer::idxFrom(p)];
     }
@@ -60,7 +55,7 @@ class DataMap : public GridIndexer
     {
         for (size_t yIdx = 0; yIdx < dataMap.numY(); ++yIdx) {
             for (size_t xIdx = 0; xIdx < dataMap.numX(); ++xIdx) {
-                // TODO: decide how to handle casting here as U may not have
+                // TODO: decide how to handle casting here as T may not have
                 // a valid compatible conversion for <<
                 os << static_cast<int>(dataMap.at(xIdx, yIdx)) << " ";
             }
@@ -70,7 +65,7 @@ class DataMap : public GridIndexer
     };
 
     private:
-    std::vector<U> m_data;
+    std::vector<T> m_data;
 };
 
 #if 0
