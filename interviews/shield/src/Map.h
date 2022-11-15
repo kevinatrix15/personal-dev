@@ -7,6 +7,7 @@
 #include <ostream>
 #include <numeric>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 enum class cell_state: uint8_t
@@ -16,7 +17,11 @@ enum class cell_state: uint8_t
     PADDED
 };
 
+// TODO: can Concepts be used below???
+// The below is necessary due to issue discussed here:
+// https://stackoverflow.com/questions/61157866/error-cannot-bind-non-const-lvalue-reference-of-type-bool-to-an-rvalue-of-ty
 template<typename T>
+using U = std::conditional_t<std::is_same_v<T, bool>, char, T>;
 class DataMap : public GridIndexer
 {
     public:
@@ -25,39 +30,39 @@ class DataMap : public GridIndexer
         // do nothing
     }
 
-    DataMap(const std::pair<size_t, size_t>& shape, const T& initVal) :
+    DataMap(const std::pair<size_t, size_t>& shape, const U& initVal) :
         GridIndexer(shape), m_data(size(), initVal)
     {
         // do nothing
     }
 
-    T operator()(const size_t xIdx, const size_t yIdx) const
+    U at(const size_t xIdx, const size_t yIdx) const
     {
         return m_data[GridIndexer::idxFrom(xIdx, yIdx)];
     }
 
-    T fromPoint(const Point& p) const
+    U at(const Point& p) const
     {
-        return (p.x(), p.y());
+        return m_data[GridIndexer::idxFrom(p)];
     }
 
-    T& operator()(const size_t xIdx, const size_t yIdx)
+    U& at(const size_t xIdx, const size_t yIdx)
     {
         return m_data[GridIndexer::idxFrom(xIdx, yIdx)];
     }
 
-    T& fromPoint(const Point& p)
+    U& at(const Point& p)
     {
-        return (p.x(), p.y());
+        return m_data[GridIndexer::idxFrom(p)];
     }
 
     friend std::ostream& operator<<(std::ostream& os, const DataMap& dataMap)
     {
         for (size_t yIdx = 0; yIdx < dataMap.numY(); ++yIdx) {
             for (size_t xIdx = 0; xIdx < dataMap.numX(); ++xIdx) {
-                // TODO: decide how to handle casting here as T may not have
+                // TODO: decide how to handle casting here as U may not have
                 // a valid compatible conversion for <<
-                os << static_cast<T>(dataMap(xIdx, yIdx)) << " ";
+                os << static_cast<int>(dataMap.at(xIdx, yIdx)) << " ";
             }
             os << std::endl;
         }
@@ -65,7 +70,7 @@ class DataMap : public GridIndexer
     };
 
     private:
-    std::vector<T> m_data;
+    std::vector<U> m_data;
 };
 
 #if 0
@@ -127,7 +132,7 @@ class ConfigurationSpace : public GridIndexer
             // extend obstacles with robot radius
             const Circle padded(obstacle.center(), obstacle.radius() + m_robotRadius);
             GridCircle::visit(padded, m_grid,[this](const size_t xIdx, const size_t yIdx) {
-                m_cellStates(xIdx, yIdx) = cell_state::OBJECT;
+                m_cellStates.at(xIdx, yIdx) = cell_state::OBJECT;
             }
             );
         }
@@ -135,8 +140,7 @@ class ConfigurationSpace : public GridIndexer
 
     bool isAccessible(const Point& p) const
     {
-        return contains(p) &&
-            m_cellStates(p.x(), p.y()) == cell_state::FREE;
+        return contains(p) && m_cellStates.at(p) == cell_state::FREE;
     }
 
     std::vector<Point> getAccessibleNbrs(const Point& p) const
@@ -148,7 +152,7 @@ class ConfigurationSpace : public GridIndexer
         const size_t maxY = p.y() < m_grid.numY() - 1 ? p.y() + 1 : p.y();
         for (size_t yIdx = minY; yIdx <= maxY; ++yIdx) {
             for (size_t xIdx = minX; xIdx <= maxX; ++xIdx) {
-                if (m_cellStates(xIdx, yIdx) == cell_state::FREE) {
+                if (m_cellStates.at(xIdx, yIdx) == cell_state::FREE) {
                     nbrs.emplace_back(Point(xIdx, yIdx));
                 }
             }
@@ -209,7 +213,7 @@ class ConfigurationSpace : public GridIndexer
         for (const size_t yIdx : rows) {
             for (const size_t xIdx : cols) {
                 // TODO: fix this after refactoring () overload
-                m_cellStates(xIdx, yIdx) = cell_state::PADDED;
+                m_cellStates.at(xIdx, yIdx) = cell_state::PADDED;
             }
         }
     }

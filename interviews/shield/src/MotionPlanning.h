@@ -95,7 +95,7 @@ class AStar
 
         // - put starting node on the open list (with f = 0)
         // NOTE: startNode's fCost = 0.0
-        Node startNode = nodeMap.fromPoint(start);
+        Node startNode = nodeMap.at(start);
         CostPoint startCP{startNode.fCost, start};
         unexploredNodes.emplace(startCP);
 
@@ -104,7 +104,7 @@ class AStar
             const double qFCost = q.first;
             const Point qPos = q.second;
             unexploredNodes.pop();
-            exploredNodes.fromPoint(qPos) = true;
+            exploredNodes.at(qPos) = true;
             // m_cSpace.getAccessibleNbrs(q.second);
             const std::vector<Point> nbrPts = m_cSpace.getAccessibleNbrs(qPos);
             for (const auto& nbrPt : nbrPts) {
@@ -113,24 +113,25 @@ class AStar
                     // return
                 }
                 // If we haven't explored this point yet
-                if (!exploredNodes.fromPoint(nbrPt)) {
+                if (!exploredNodes.at(nbrPt)) {
                     Node nbr(nbrPt, qPos);
-                    const double parentGCost = nodeMap.fromPoint(qPos).gCost;
+                    const double parentGCost = nodeMap.at(qPos).gCost;
                     nbr.updateCosts(goal, parentGCost);
 
                     // if not on the open list, add to open list, and set current cell as the parent
                     // nbr.parent = q.second
                     //         OR
                     // if on the open list, check if has a lower f
-                    if (nodeMap.fromPoint(nbr.pos).fCost == UNSET_VAL ||
-                        nodeMap.fromPoint(nbr.pos).fCost > nbr.fCost) {
+                    if (nodeMap.at(nbr.pos).fCost == UNSET_VAL ||
+                        nodeMap.at(nbr.pos).fCost > nbr.fCost) {
                             unexploredNodes.emplace(std::make_pair(nbr.fCost, nbr.pos));
-                            nodeMap.fromPoint(nbr.pos) = nbr;
+                            nodeMap.at(nbr.pos) = nbr;
                     }
                 }
             }
 
         }
+        return std::vector<Point>();
     }
     // Data structure considerations:
     // Closed list
@@ -207,6 +208,6 @@ class AStar
             std::cout << "Goal point " << goal << " is not accessible" << std::endl;
             return false;
         }
-
+      return true;
     }
 };
