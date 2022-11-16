@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-@file run.py
+@file run-save-bb8.py
 @brief Script for running the save-bb8 executable and generating plots
 of the configuration space and solved path.
 @author Kevin Briggs <kevinabriggs@hotmail.com>
@@ -68,13 +68,14 @@ def main():
   fig, ax = plt.subplots(1)
   p = ax.pcolormesh(config_space, cmap='jet')
 
+  # If no solution is found, the solution_path will be empty. Only plot it if found
   if solution_path.size != 0:
     x = solution_path[:, 0]
     y = solution_path[:, 1]
-    plt.plot(x, y, linewidth='5', color='green')
-  # plt.annotate("", xy=(x, y), xytext=(x, y), arrowprops=dict(arrowstyle="->"))
+    plt.plot(x, y, linewidth='5', color='cyan')
+    
   plt.show()
-  fig.savefig('config_space.png')
+  fig.savefig('solution.png')
 
 if __name__ == "__main__":
   main()
