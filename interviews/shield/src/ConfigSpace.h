@@ -141,7 +141,7 @@ class ConfigurationSpace : public GridIndexer
             );
 
             // Mark the obstacles
-            GridCircle::visit(padded, *this, [this](const size_t xIdx, const size_t yIdx) {
+            GridCircle::visit(obstacle, *this, [this](const size_t xIdx, const size_t yIdx) {
                 m_cellStates.at(xIdx, yIdx) = cell_state::OBJECT;
             }
             );
