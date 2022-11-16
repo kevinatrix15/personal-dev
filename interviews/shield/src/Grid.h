@@ -1,3 +1,10 @@
+/**
+ * @file Grid.h
+ * @brief File containing class definitions related to representing and accessing data on a grid.
+ * @author Kevin Briggs <kevinabriggs@hotmail.com>
+ * @version 1
+ * @date 2022-11-16
+ */
 #pragma once
 
 #include "Cell.h"
@@ -6,6 +13,11 @@
 #include <functional>
 #include <memory>
 
+/**
+ * @brief Class used to provide information and convenient indexing of a 2D
+ * cartesian grid of cells with unit cell lengths (i.e., pixel map)
+ * 
+ */
 class GridIndexer
 {
     public:
@@ -24,6 +36,13 @@ class GridIndexer
       // do nothing
     }
 
+    /**
+     * @brief Get the collapsed 1D index, given the 2D cartesian indices.
+     * 
+     * @param xIdx The x-index.
+     * @param yIdx The y-index.
+     * @return size_t The 1D index.
+     */
     size_t idxFrom(const size_t xIdx, const size_t yIdx) const
     {
         assert(xIdx < m_nx);
@@ -31,6 +50,14 @@ class GridIndexer
         return xIdx + yIdx * m_nx;
     }
 
+    /**
+     * @brief Get the collapsed 1D index, given a cell representing the x-y
+     * coordinates.
+     * 
+     * @param c The cell.
+     * @param yIdx The y-index.
+     * @return size_t The 1D index.
+     */
     size_t idxFrom(const Cell& c) const
     {
         return idxFrom(c.x(), c.y());
@@ -56,7 +83,7 @@ class GridIndexer
         return std::make_pair(numX(), numY());
     }
 
-    // NOTE: we are using Cell's here to store the x and y indices for convenience.
+    // NOTE: we are using Cells here to store the x and y indices for convenience.
     bool contains(const Cell& c) const
     {
         return c.x() < numX() && c.y() < numY();
@@ -67,23 +94,80 @@ class GridIndexer
     size_t m_ny;
 };
 
-// TODO: collapse this into GridIndexer and rename where used
-class Grid : public GridIndexer
+/**
+ * @brief Class used for storing data on a 2D grid, with convenience methods for natural
+ * data access, while storing data in a 1D vector for improved cache performance.
+ * 
+ * @tparam T The data type.
+ */
+template<typename T>
+class DataMap : public GridIndexer
 {
     public:
-    Grid(const size_t nx, const size_t ny) : GridIndexer(nx, ny)
+    DataMap(const std::pair<size_t, size_t>& shape) : GridIndexer(shape), m_data(size())
     {
-        // the grid should have non-zero dimensions in both axes
-        assert(numX() > 0);
-        assert(numY() > 0);
+        // do nothing
     }
+
+    DataMap(const std::pair<size_t, size_t>& shape, const std::vector<T>& data) :
+      GridIndexer(shape), m_data(data)
+    {
+        // do nothing
+    }
+
+    DataMap(const std::pair<size_t, size_t>& shape, const T& initVal) :
+        GridIndexer(shape), m_data(size(), initVal)
+    {
+        // do nothing
+    }
+
+    T at(const size_t xIdx, const size_t yIdx) const
+    {
+        return m_data[GridIndexer::idxFrom(xIdx, yIdx)];
+    }
+
+    T at(const Cell& c) const
+    {
+        return m_data[GridIndexer::idxFrom(c)];
+    }
+
+    typename std::vector<T>::reference at(const size_t xIdx, const size_t yIdx)
+    {
+        return m_data[GridIndexer::idxFrom(xIdx, yIdx)];
+    }
+
+    typename std::vector<T>::reference at(const Cell& c)
+    {
+        return m_data[GridIndexer::idxFrom(c)];
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const DataMap& dataMap)
+    {
+        for (size_t yIdx = 0; yIdx < dataMap.numY(); ++yIdx) {
+            for (size_t xIdx = 0; xIdx < dataMap.numX(); ++xIdx) {
+                os << static_cast<int>(dataMap.at(xIdx, yIdx)) << (xIdx < dataMap.numX() - 1 ? " " : "");
+            }
+            os << std::endl;
+        }
+        return os;
+    };
+
+    private:
+    std::vector<T> m_data;
 };
 
+/**
+ * @brief Class for representing a circle.
+ */
 class Circle
 {
     public:
-    // NOTE: we allow a circle with a zero radius
-    // TODO: consider storing data as int, allowing for negative circle center
+    /**
+     * @brief Construct a new Circle object
+     * 
+     * @param center The center of the circle, as a cell.
+     * @param radius The radius of the circle, in units of cells.
+     */
     Circle(const Cell& center, const size_t radius) :
         m_center(center), m_radius(radius)
     {
@@ -105,10 +189,21 @@ class Circle
 };
 
 using Callback = std::function<void(const size_t xIdx, const size_t yIdx)>;
+/**
+ * @brief Class for representing a circle on a 2D grid object.
+ */
 class GridCircle
 {
     public:
 
+    /**
+     * @brief Visit all cells within the provided circle, performing a callback
+     * function at each cell.
+     * 
+     * @param circle The circle.
+     * @param grid The grid object.
+     * @param callback The callback to be performed.
+     */
     static void visit(const Circle& circle, const GridIndexer& grid, Callback callback)
     {
         const size_t r = circle.radius();

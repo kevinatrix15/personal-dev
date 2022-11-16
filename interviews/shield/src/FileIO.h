@@ -1,3 +1,10 @@
+/**
+ * @file FileIO.h
+ * @brief File containing various file I/O operations.
+ * @author Kevin Briggs <kevinabriggs@hotmail.com>
+ * @version 1
+ * @date 2022-11-16
+ */
 #pragma once
 
 #include "ConfigSpace.h"
@@ -11,9 +18,20 @@
 
 constexpr char DELIM = ' ';
 
+/**
+ * @brief Class for I/O operations involving ConfigurationSpace objects.
+ */
 class ConfigSpaceIO
 {
   public:
+  /**
+   * @brief Write the ConfigurationSpace data to a specified path.
+   * 
+   * @param configSpace The configuration space object.
+   * @param filePath The file to be written.
+   * NOTE: If the file exists, it will be overwritten.
+   * NOTE: The directory structure will be created as needed.
+   */
   static void write(const ConfigurationSpace& configSpace,
                     const std::filesystem::path& filePath)
   {
@@ -35,6 +53,13 @@ class ConfigSpaceIO
     outStream << configSpace;
   }
 
+  /**
+   * @brief Read ConfigurationSpace data from a specified file and return a
+   * constructed ConfigurationSpace object.
+   * 
+   * @param filePath The file path.
+   * @return ConfigurationSpace The constructed ConfigurationSpace object.
+   */
   static ConfigurationSpace read(const std::filesystem::path& filePath)
   {
     // check file exists and can be read
@@ -89,6 +114,14 @@ class ConfigSpaceIO
 class SolutionPathIO
 {
   public:
+  /**
+   * @brief Write a path of cells to a specified path.
+   * 
+   * @param solutionPath The path of cells to be written.
+   * @param filePath The file to be written.
+   * NOTE: If the file exists, it will be overwritten.
+   * NOTE: The directory structure will be created as needed.
+   */
   static void write(const std::vector<Cell>& solutionPath,
                     const std::filesystem::path& filePath)
   {
@@ -107,6 +140,12 @@ class SolutionPathIO
     }
   }
 
+  /**
+   * @brief Read ell path data from a specified file and return a vector of path cells.
+   * 
+   * @param filePath The file path.
+   * @return std::vector<Cell> The cell path.
+   */
   static std::vector<Cell> read(const std::filesystem::path& filePath)
   {
     // check file exists and can be read

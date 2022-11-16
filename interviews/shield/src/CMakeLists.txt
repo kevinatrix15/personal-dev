@@ -8,6 +8,14 @@ file(GLOB CPP "*.cpp")
 # Select all header files
 file(GLOB H "*.h")
 
+if (MSVC)
+    # warning level 4 and all warnings as errors
+    add_compile_options(/W4 /WX)
+else()
+    # lots of warnings and all warnings as errors
+    add_compile_options(-pg -Wall -Wextra -pedantic -Werror)
+endif()
+
 # setup library ###############################################################
 
 # generate static library

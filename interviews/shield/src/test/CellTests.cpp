@@ -1,3 +1,10 @@
+/**
+ * @file CellTests.cpp
+ * @brief Unit tests for the Cell class.
+ * @author Kevin Briggs <kevinabriggs@hotmail.com>
+ * @version 1
+ * @date 2022-11-16
+ */
 #include "Cell.h"
 
 #define CATCH_CONFIG_MAIN // This tells Catch to provide a main() - only do this in one file

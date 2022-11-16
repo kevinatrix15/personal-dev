@@ -1,9 +1,20 @@
+/**
+ * @file Cell.h
+ * @brief File containing the definition of the Cell class.
+ * @author Kevin Briggs <kevinabriggs@hotmail.com>
+ * @version 1
+ * @date 2022-11-16
+ */
 #pragma once
 
 #include <cassert>
 #include <cmath>
 #include <ostream>
 
+/**
+ * @brief Class for representing a unit cell, with x-y index coordinates. This enables
+ * using a Cell object for indexing into a 2D map.
+ */
 class Cell
 {
     public:
@@ -12,8 +23,6 @@ class Cell
         // do nothing
     }
 
-    // TODO (kbriggs): eventually, consider making this a templated class for flexibility. Keeping
-    // size_t for current use case for simplicity.
     Cell(const size_t x, const size_t y) : m_x(x), m_y(y)
     {
         // do nothing
@@ -39,7 +48,13 @@ class Cell
         return m_y;
     }
 
-    // TODO: consider making this distSq to avoid taking sqrt
+    /**
+     * @brief Calculate the Euclidean distance between two cells.
+     * 
+     * @param other The other cell.
+     * @return double The distance. NOTE: this is returned as a double to avoid
+     * truncation with non-orthogonal distances.
+     */
     double distance(const Cell& other) const
     {
         const double dx = static_cast<double>(m_x) - static_cast<double>(other.m_x);

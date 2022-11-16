@@ -6,6 +6,14 @@ set(CMAKE_CXX_EXTENSIONS Off)
 
 project(SaveBB8)
 
+if (MSVC)
+    # warning level 4 and all warnings as errors
+    add_compile_options(/W4 /WX)
+else()
+    # lots of warnings and all warnings as errors
+    add_compile_options(-pg -Wall -Wextra -pedantic -Werror)
+endif()
+
 set(BUILD_DOC
     NO
     CACHE BOOL "Build documentation")

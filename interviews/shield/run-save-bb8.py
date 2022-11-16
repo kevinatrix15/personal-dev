@@ -63,19 +63,17 @@ def main():
   config_space = np.loadtxt(CONFIG_SPACE_FILE, delimiter=' ', skiprows=3)
   solution_path = np.loadtxt(SOLUTION_PATH_FILE, delimiter=' ')
 
-  print("Sln path:", solution_path)
-
   # generate plot, showing the configuration space with the path mapped onto it
   # NOTE: the path file may be empty if no path is found
   fig, ax = plt.subplots(1)
-  p = ax.pcolormesh(config_space)
-  x = solution_path[:, 0]
-  y = solution_path[:, 1]
-  dx = solution_path[1:, 0] - solution_path[:-1, 0]
-  dy = solution_path[1:, 1] - solution_path[:-1, 1]
-  # plt.arrow(x, y, dx, dy)
-  plt.plot(x, y)
+  p = ax.pcolormesh(config_space, cmap='jet')
+
+  if solution_path.size != 0:
+    x = solution_path[:, 0]
+    y = solution_path[:, 1]
+    plt.plot(x, y, linewidth='5', color='green')
   # plt.annotate("", xy=(x, y), xytext=(x, y), arrowprops=dict(arrowstyle="->"))
+  plt.show()
   fig.savefig('config_space.png')
 
 if __name__ == "__main__":

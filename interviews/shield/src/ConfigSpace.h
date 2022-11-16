@@ -1,3 +1,11 @@
+/**
+ * @file ConfigSpace.h
+ * @brief File containing class definitions and data structures used for representing
+ * the configuration space.
+ * @author Kevin Briggs <kevinabriggs@hotmail.com>
+ * @version 1
+ * @date 2022-11-16
+ */
 #pragma once
 
 #include "Grid.h"
@@ -17,68 +25,6 @@ enum class cell_state: uint8_t
     FREE,
     OBJECT,
     PADDED
-};
-
-/**
- * @brief Class used for storing data on a 2D grid, with convenience methods for natural
- * data access, while storing data in a 1D vector for improved cache performance.
- * 
- * @tparam T The data type.
- */
-template<typename T>
-class DataMap : public GridIndexer
-{
-    public:
-    DataMap(const std::pair<size_t, size_t>& shape) : GridIndexer(shape), m_data(size())
-    {
-        // do nothing
-    }
-
-    DataMap(const std::pair<size_t, size_t>& shape, const std::vector<T>& data) :
-      GridIndexer(shape), m_data(data)
-    {
-        // do nothing
-    }
-
-    DataMap(const std::pair<size_t, size_t>& shape, const T& initVal) :
-        GridIndexer(shape), m_data(size(), initVal)
-    {
-        // do nothing
-    }
-
-    T at(const size_t xIdx, const size_t yIdx) const
-    {
-        return m_data[GridIndexer::idxFrom(xIdx, yIdx)];
-    }
-
-    T at(const Cell& c) const
-    {
-        return m_data[GridIndexer::idxFrom(c)];
-    }
-
-    typename std::vector<T>::reference at(const size_t xIdx, const size_t yIdx)
-    {
-        return m_data[GridIndexer::idxFrom(xIdx, yIdx)];
-    }
-
-    typename std::vector<T>::reference at(const Cell& c)
-    {
-        return m_data[GridIndexer::idxFrom(c)];
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, const DataMap& dataMap)
-    {
-        for (size_t yIdx = 0; yIdx < dataMap.numY(); ++yIdx) {
-            for (size_t xIdx = 0; xIdx < dataMap.numX(); ++xIdx) {
-                os << static_cast<int>(dataMap.at(xIdx, yIdx)) << (xIdx < dataMap.numX() - 1 ? " " : "");
-            }
-            os << std::endl;
-        }
-        return os;
-    };
-
-    private:
-    std::vector<T> m_data;
 };
 
 /**

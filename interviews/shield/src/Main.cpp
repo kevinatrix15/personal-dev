@@ -1,3 +1,11 @@
+/**
+ * @file Main.cpp
+ * @brief The main file for the save-bb8 project, used to provide motion planning
+ * through a configuration space with obstacles.
+ * @author Kevin Briggs <kevinabriggs@hotmail.com>
+ * @version 1
+ * @date 2022-11-16
+ */
 #include "FileIO.h"
 #include "ConfigSpace.h"
 #include "MotionPlanning.h"
@@ -136,12 +144,6 @@ int main(int argc, char** argv)
     default:
       throw std::runtime_error("Invalid obstacleCase argument: " + std::to_string(static_cast<int>(obstacleCase)));
   }
-  #if 0
-  obstacles.emplace_back(Circle({14, 4}, 4));
-  obstacles.emplace_back(Circle({37, 13}, 6));
-  obstacles.emplace_back(Circle({40, 20}, 4));
-  obstacles.emplace_back(Circle({10, 17}, 3));
-  #endif
 
   std::cout << cSpace;
   std::cout << std::endl;

@@ -1,3 +1,10 @@
+/**
+ * @file MotionPlanning.h
+ * @brief File containing various implementations of motion planning algorithms.
+ * @author Kevin Briggs <kevinabriggs@hotmail.com>
+ * @version 1
+ * @date 2022-11-16
+ */
 #pragma once
 
 #include "Cell.h"
@@ -14,6 +21,9 @@ const Cell UNSET_CELL(_UNSET_IDX, _UNSET_IDX);
 // stores {fCost, Cell}
 using CostCell = std::pair<double, Cell>;
 
+/**
+ * @brief Structure containing Node data for use with path finding algorithms.
+ */
 struct Node
 {
     public:
@@ -30,7 +40,7 @@ struct Node
 
     void updateCosts(const Cell& goal, const double parentGCost)
     {
-        // TODO: make configurable function to determine which heuristic to use
+        // TODO: FUTURE WORK- make configurable function to determine which heuristic to use
         const double hCost = pos.distance(goal);
         gCost = parentGCost + 1.0;
         fCost = gCost + hCost;
@@ -46,11 +56,14 @@ struct Node
     private:
 };
 
+/**
+ * @brief Class used to perform the A* path-finding algorithm.
+ */
 class AStar
 {
     public:
-    // TODO: provide a heuristic function to enable experimenting with different
-    // approaches.
+    // TODO: FUTURE WORK- provide a heuristic function to enable experimenting with different
+    // heuristics.
     explicit AStar(const ConfigurationSpace& cSpace) : m_cSpace(cSpace)
     {
         // do nothing
@@ -62,7 +75,7 @@ class AStar
      *   https://en.wikipedia.org/wiki/A*_search_algorithm
      *   https://www.simplilearn.com/tutorials/artificial-intelligence-tutorial/a-star-algorithm#algorithm
      *   https://www.geeksforgeeks.org/a-search-algorithm/
-     * 
+     *
      * @param start The start location
      * @param goal The goal location
      * @return std::vector<Cell> The cell locations making up the path, ordered from start to goal, if found.
@@ -143,29 +156,6 @@ class AStar
         std::cout << "Goal not found... :(" << std::endl;
         return std::vector<Cell>();
     }
-    // Data structure considerations:
-    // Closed list
-    // operations:
-    // - check if a node with same location (index) has a smaller f
-    //      * implies storing node data, including at least position and f
-    //
-    // Open list
-    // operations:
-    // - readily get the node with smallest 'f'
-    // - add children (emplace())
-    // - remove top candidate (pop())
-    // - check for other nodes with same position, compare whether have smaller 'f'
-
-    // operations:
-    // initialize all nodes in nodeMap with invalid (UNSET) values
-
-    // set nodeMap(start):
-    //  f = 0
-    //  g = 0
-    //  h = 0
-    //  parent = start (x(), y())
-
-    // put starting cell in unexplored (f = 0)
 
     private:
     ConfigurationSpace m_cSpace;
@@ -178,7 +168,7 @@ class AStar
      *  - Start is not accessible
      *  - Goal is not accessible
      *  - Start is already at the goal
-     * 
+     *
      * @param start The start position
      * @param goal The goal position
      * @return false if one of the above conditions, else true
@@ -214,7 +204,7 @@ class AStar
 
     /**
      * @brief Generate the path followed from start to goal
-     * 
+     *
      * @param nodeMap The node map containing node data at each grid point
      * @param goal The goal location
      * @return std::vector<Cell> All points followed from start to goal
