@@ -6,11 +6,11 @@
 #include <string>
 
 namespace {
-	void testDist(const std::string& description, const Point& p1, const Point& p2, const size_t expected) {
+	void testDist(const std::string& description, const Point& p1, const Point& p2, const double expected) {
 		SECTION(description) {
 			try {
                 // arrange & act
-                const size_t dist = p1.distance(p2);
+                const double dist = p1.distance(p2);
 
                 // assert
 				REQUIRE(expected == dist);

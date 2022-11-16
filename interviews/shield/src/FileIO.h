@@ -7,10 +7,11 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <sstream>
 
 constexpr char DELIM = ' ';
 
-class SolutionWriter
+class ConfigSpaceIO
 {
   public:
   static void write(const ConfigurationSpace& configSpace,
