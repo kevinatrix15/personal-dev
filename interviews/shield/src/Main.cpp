@@ -66,8 +66,36 @@ int main(int argc, char** argv)
     {
       // two circles at opposite corners
       const size_t radius = static_cast<int>(std::min(nx, ny) / 2) - static_cast<int>(robotRadius);
-      obstacles.emplace_back(Circle({0U, ny-1}, radius));
-      obstacles.emplace_back(Circle({nx-1, 0U}, radius));
+      obstacles.emplace_back(Circle({0, ny-1}, radius));
+      obstacles.emplace_back(Circle({nx-1, 0}, radius));
+      break;
+    }
+    case obstacle_config::COMPLEX:
+    {
+      // two circles at opposite corners
+      const size_t radius = static_cast<int>(std::min(nx, ny) / 8) - static_cast<int>(robotRadius);
+      obstacles.emplace_back(Circle({0, ny/4}, radius));
+      obstacles.emplace_back(Circle({0, ny/2}, radius));
+      obstacles.emplace_back(Circle({0, 3*ny/4}, radius));
+
+      obstacles.emplace_back(Circle({nx/4, 0}, radius));
+      obstacles.emplace_back(Circle({nx/4, ny/3}, radius));
+      obstacles.emplace_back(Circle({nx/4, 2*ny/3}, radius));
+      obstacles.emplace_back(Circle({nx/4, ny-1}, radius));
+
+      obstacles.emplace_back(Circle({nx/2, ny/4}, radius));
+      obstacles.emplace_back(Circle({nx/2, ny/2}, radius));
+      obstacles.emplace_back(Circle({nx/2, 3*ny/4}, radius));
+
+      obstacles.emplace_back(Circle({3*nx/4, 0}, radius));
+      obstacles.emplace_back(Circle({3*nx/4, ny/3}, radius));
+      obstacles.emplace_back(Circle({3*nx/4, 2*ny/3}, radius));
+      obstacles.emplace_back(Circle({3*nx/4, ny-1}, radius));
+
+      obstacles.emplace_back(Circle({nx-1, ny/4}, radius));
+      obstacles.emplace_back(Circle({nx-1, ny/2}, radius));
+      obstacles.emplace_back(Circle({nx-1, 3*ny/4}, radius));
+
       break;
     }
     default:
@@ -94,7 +122,7 @@ int main(int argc, char** argv)
   // std::cout << cSpace2;
 
   AStar search(cSpace);
-  const std::vector<Point> path = search.searchPath({robotRadius + 1, robotRadius + 1}, {cSpace.numX()-robotRadius, cSpace.numY()-robotRadius});
+  const std::vector<Point> path = search.searchPath({robotRadius + 1, robotRadius + 1}, {cSpace.numX()-robotRadius - 1, cSpace.numY()-robotRadius - 1});
 
   //std::cout << "Path: " << std::endl;
   //for (const auto& p : path) {
