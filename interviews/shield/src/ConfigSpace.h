@@ -140,7 +140,6 @@ class ConfigurationSpace : public GridIndexer
     };
 
     private:
-    // robot radius, in cells
     size_t m_robotRadius;
     DataMap<cell_state> m_cellStates;
 

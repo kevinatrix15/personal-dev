@@ -10,6 +10,7 @@
 #define CATCH_CONFIG_MAIN // This tells Catch to provide a main() - only do this in one file
 #include "catch2.h"
 
+#include <cmath>
 #include <string>
 
 namespace {
@@ -59,17 +60,17 @@ TEST_CASE("Cell setters are valid", "setters")
 
 TEST_CASE("Distance is valid for diagonal test", "setters")
 {
-    testDist("coincident1", {0, 0}, {0, 0}, 0);
-    testDist("coincident2", {4, 2}, {4, 2}, 0);
+    testDist("coincident1", {0, 0}, {0, 0}, 0.0);
+    testDist("coincident2", {4, 2}, {4, 2}, 0.0);
 
-    testDist("unit vectors1", {0, 1}, {0, 0}, 1);
-    testDist("unit vectors2", {0, 0}, {1, 0}, 1);
+    testDist("unit vectors1", {0, 1}, {0, 0}, 1.0);
+    testDist("unit vectors2", {0, 0}, {1, 0}, 1.0);
 
-    testDist("unit diagonal- flooring", {1, 1}, {0, 0}, 1);
+    testDist("unit diagonal", {1, 1}, {0, 0}, sqrt(2.0));
     // (size_t)(5 * sqrt(2)) = (size_t)(7.0711) = 7
-    testDist("diagonal- 5*sqrt(2)", {0, 0}, {5, 5}, 7);
+    testDist("diagonal- 5*sqrt(2)", {0, 0}, {5, 5}, 5.0 * sqrt(2.0));
 
     // 3 4 5 triangles
-    testDist("3 4 5 triangle", {0, 3}, {4, 0}, 5);
-    testDist("3 4 5 triangle- flipped", {3, 0}, {0, 4}, 5);
+    testDist("3 4 5 triangle", {0, 3}, {4, 0}, 5.0);
+    testDist("3 4 5 triangle- flipped", {3, 0}, {0, 4}, 5.0);
 }

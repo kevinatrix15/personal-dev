@@ -111,6 +111,9 @@ class ConfigSpaceIO
   }
 };
 
+/**
+ * @brief Class for I/O operations involving paths of cells.
+ */
 class SolutionPathIO
 {
   public:
