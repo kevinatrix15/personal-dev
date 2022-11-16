@@ -1,5 +1,5 @@
 #include "FileIO.h"
-#include "Map.h"
+#include "ConfigSpace.h"
 #include "MotionPlanning.h"
 
 #include <exception>
@@ -7,7 +7,7 @@
 #include <iostream>
 #include <vector>
 
-constexpr int EXPECTED_CMDS = 5;
+constexpr int EXPECTED_ARGS = 5;
 
 // TODO: add command line args for file path, etc.
 int main(int argc, char** argv)
@@ -19,8 +19,8 @@ int main(int argc, char** argv)
   // 3- robot radius (in cells)
   // 4- Pre-configured case
 
-  if (argc != EXPECTED_CMDS) {
-    throw std::runtime_error("Invalid number of args provided: " + std::to_string(argc) + ", expected " + std::to_string(EXPECTED_CMDS));
+  if (argc != EXPECTED_ARGS) {
+    throw std::runtime_error("Invalid number of args provided: " + std::to_string(argc) + ", expected " + std::to_string(EXPECTED_ARGS));
   }
   const size_t ny = static_cast<size_t>(std::stoi(argv[1]));
   const size_t nx = static_cast<size_t>(std::stoi(argv[2]));
@@ -58,7 +58,7 @@ int main(int argc, char** argv)
     {
       // single circle in center of domain with radius spanning the narrow dimension
       const size_t minRadius = std::min(nx, ny);
-      const Point midPt = Point(nx/2, ny/2);
+      const Cell midPt = Cell(nx/2, ny/2);
       obstacles.emplace_back(Circle(midPt, minRadius));
       break;
     }
@@ -154,7 +154,7 @@ int main(int argc, char** argv)
   // std::cout << cSpace2;
 
   AStar search(cSpace);
-  const std::vector<Point> path = search.searchPath({robotRadius + 1, robotRadius + 1}, {cSpace.numX()-robotRadius - 1, cSpace.numY()-robotRadius - 1});
+  const std::vector<Cell> path = search.searchPath({robotRadius + 1, robotRadius + 1}, {cSpace.numX()-robotRadius - 1, cSpace.numY()-robotRadius - 1});
 
   // write data
   const std::filesystem::path cSpaceFile("./output/config-space.txt");

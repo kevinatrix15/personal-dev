@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Point.h"
-#include "Map.h"
+#include "Cell.h"
+#include "ConfigSpace.h"
 
 #include <limits>
 #include <iostream>
@@ -9,26 +9,26 @@
 
 constexpr double UNSET_VAL = std::numeric_limits<double>::max();
 constexpr size_t _UNSET_IDX = std::numeric_limits<size_t>::max();
-const Point UNSET_PT(_UNSET_IDX, _UNSET_IDX);
+const Cell UNSET_CELL(_UNSET_IDX, _UNSET_IDX);
 
-// stores {fCost, Point}
-using CostPoint = std::pair<double, Point>;
+// stores {fCost, Cell}
+using CostCell = std::pair<double, Cell>;
 
 struct Node
 {
     public:
-    Node() : pos(UNSET_PT), parentPos(UNSET_PT), gCost(UNSET_VAL), fCost(UNSET_VAL)
+    Node() : pos(UNSET_CELL), parentPos(UNSET_CELL), gCost(UNSET_VAL), fCost(UNSET_VAL)
     {
         // do nothing
     }
 
-    Node(const Point& p, const Point& parentPos) :
+    Node(const Cell& p, const Cell& parentPos) :
         pos(p), parentPos(parentPos)
     {
         // do nothing
     }
 
-    void updateCosts(const Point& goal, const double parentGCost)
+    void updateCosts(const Cell& goal, const double parentGCost)
     {
         // TODO: make configurable function to determine which heuristic to use
         const double hCost = pos.distance(goal);
@@ -36,8 +36,8 @@ struct Node
         fCost = gCost + hCost;
     }
 
-    Point pos;
-    Point parentPos;
+    Cell pos;
+    Cell parentPos;
 
     // gCost, fCost
     double gCost;
@@ -65,23 +65,23 @@ class AStar
      * 
      * @param start The start location
      * @param goal The goal location
-     * @return std::vector<Point> The cell locations making up the path, ordered from start to goal, if found.
+     * @return std::vector<Cell> The cell locations making up the path, ordered from start to goal, if found.
      * Otherwise, an empty vector is returned.
      */
-    std::vector<Point> searchPath(const Point& start, const Point& goal) const
+    std::vector<Cell> searchPath(const Cell& start, const Cell& goal) const
     {
         // Check for blocked / unreachable start and goal positions, or start is at the goal.
         // Chose not to throw an exception to allow program to continue with new user-provided inputs
         if (!isValidStartGoal(start, goal)) {
-            return std::vector<Point>();
+            return std::vector<Cell>();
         }
 
         // Use a priority queue as a min-heap with smallest f-cost at the top for
         // storing the unexplored (open) nodes
-        auto comp = [&](const CostPoint& c1, const CostPoint& c2) {
+        auto comp = [&](const CostCell& c1, const CostCell& c2) {
                 return c1.first > c2.first;
         };
-        std::priority_queue<CostPoint, std::vector<CostPoint>, decltype(comp)> unexploredNodes(comp);
+        std::priority_queue<CostCell, std::vector<CostCell>, decltype(comp)> unexploredNodes(comp);
 
         // Container storing the current state of each node in the map 
         const std::pair<size_t, size_t> mapShape = m_cSpace.shape();
@@ -97,13 +97,13 @@ class AStar
         startNode.gCost = 0.0;
         nodeMap.at(start) = startNode;
 
-        CostPoint startCP{startNode.fCost, start};
+        CostCell startCP{startNode.fCost, start};
         unexploredNodes.emplace(startCP);
 
         while (!unexploredNodes.empty()) {
             // Next search node 'q' is the node with lowest fCost from the heap
-            CostPoint q = unexploredNodes.top();
-            const Point qPos = q.second;
+            CostCell q = unexploredNodes.top();
+            const Cell qPos = q.second;
             // Remove q from the top of the heap and add it to the explored nodes
             unexploredNodes.pop();
             exploredNodes.at(qPos) = true;
@@ -111,20 +111,20 @@ class AStar
             // Get all of the current node's accessible neighbors.
             // There are 8 max possible neighbors, but may be less if near
             // the border or within an obstacle
-            const std::vector<Point> nbrPts = m_cSpace.getAccessibleNbrs(qPos);
-            for (const auto& nbrPt : nbrPts) {
+            const std::vector<Cell> nbrCells = m_cSpace.getAccessibleNbrs(qPos);
+            for (const auto& nbrCell : nbrCells) {
                 // Check if this neighbor is the goal, updates its state, and
                 // return a path
-                if (nbrPt == goal) {
+                if (nbrCell == goal) {
                   std::cout << "Goal found!!!" << std::endl;
-                  Node nbr(nbrPt, qPos);
+                  Node nbr(nbrCell, qPos);
                   nodeMap.at(nbr.pos) = nbr;
                   return generatePath(nodeMap, goal);
                 }
 
                 // Explore this neighbor if we haven't already
-                if (!exploredNodes.at(nbrPt)) {
-                    Node nbr(nbrPt, qPos);
+                if (!exploredNodes.at(nbrCell)) {
+                    Node nbr(nbrCell, qPos);
                     const double parentGCost = nodeMap.at(qPos).gCost;
                     nbr.updateCosts(goal, parentGCost);
 
@@ -141,7 +141,7 @@ class AStar
             }
         }
         std::cout << "Goal not found... :(" << std::endl;
-        return std::vector<Point>();
+        return std::vector<Cell>();
     }
     // Data structure considerations:
     // Closed list
@@ -183,7 +183,7 @@ class AStar
      * @param goal The goal position
      * @return false if one of the above conditions, else true
      */
-    bool isValidStartGoal(const Point& start, const Point& goal) const
+    bool isValidStartGoal(const Cell& start, const Cell& goal) const
     {
         if (!m_cSpace.contains(start)) {
             std::cout << "Start point " << start << " is not in the grid" << std::endl;
@@ -217,16 +217,16 @@ class AStar
      * 
      * @param nodeMap The node map containing node data at each grid point
      * @param goal The goal location
-     * @return std::vector<Point> All points followed from start to goal
+     * @return std::vector<Cell> All points followed from start to goal
      */
-    static std::vector<Point> generatePath(const DataMap<Node>& nodeMap, const Point& goal)
+    static std::vector<Cell> generatePath(const DataMap<Node>& nodeMap, const Cell& goal)
     {
-      std::vector<Point> path;
+      std::vector<Cell> path;
 
       // Generate the path, working backwards from the goal
       // node, and terminating when we reach the start location
       path.emplace_back(goal);
-      Point next = nodeMap.at(goal).parentPos;
+      Cell next = nodeMap.at(goal).parentPos;
       do {
         path.emplace_back(next);
         next = nodeMap.at(next).parentPos;

@@ -1,4 +1,4 @@
-#include "Point.h"
+#include "Cell.h"
 
 #define CATCH_CONFIG_MAIN // This tells Catch to provide a main() - only do this in one file
 #include "catch2.h"
@@ -6,11 +6,11 @@
 #include <string>
 
 namespace {
-	void testDist(const std::string& description, const Point& p1, const Point& p2, const double expected) {
+	void testDist(const std::string& description, const Cell& c1, const Cell& c2, const double expected) {
 		SECTION(description) {
 			try {
                 // arrange & act
-                const double dist = p1.distance(p2);
+                const double dist = c1.distance(c2);
 
                 // assert
 				REQUIRE(expected == dist);
@@ -22,32 +22,32 @@ namespace {
 }
 
 
-TEST_CASE("Point construction and getters are valid", "[ctor]")
+TEST_CASE("Cell construction and getters are valid", "[ctor]")
 {
     // arrange
-    Point p(4, 2);
+    Cell c(4, 2);
 
     // act
-    const size_t x = p.x();
-    const size_t y = p.y();
+    const size_t x = c.x();
+    const size_t y = c.y();
 
     // assert
     REQUIRE(4 == x);
     REQUIRE(2 == y);
 }
 
-TEST_CASE("Point setters are valid", "setters")
+TEST_CASE("Cell setters are valid", "setters")
 {
     // arrange
-    Point p;
+    Cell c;
 
     // act
-    p.x() = 4;
-    p.y() = 2;
+    c.x() = 4;
+    c.y() = 2;
 
     // assert
-    REQUIRE(4 == p.x());
-    REQUIRE(2 == p.y());
+    REQUIRE(4 == c.x());
+    REQUIRE(2 == c.y());
 }
 
 TEST_CASE("Distance is valid for diagonal test", "setters")

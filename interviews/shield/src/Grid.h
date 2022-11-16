@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Point.h"
+#include "Cell.h"
 
 #include <cassert>
 #include <functional>
@@ -31,9 +31,9 @@ class GridIndexer
         return xIdx + yIdx * m_nx;
     }
 
-    size_t idxFrom(const Point& p) const
+    size_t idxFrom(const Cell& c) const
     {
-        return idxFrom(p.x(), p.y());
+        return idxFrom(c.x(), c.y());
     }
 
     size_t size() const
@@ -56,11 +56,10 @@ class GridIndexer
         return std::make_pair(numX(), numY());
     }
 
-    // NOTE: we are using Point's here to store the x and y indices for convenience.
-    // TODO: consider renaming Point to Cell???
-    bool contains(const Point& p) const
+    // NOTE: we are using Cell's here to store the x and y indices for convenience.
+    bool contains(const Cell& c) const
     {
-        return p.x() < numX() && p.y() < numY();
+        return c.x() < numX() && c.y() < numY();
     }
 
     private:
@@ -85,12 +84,12 @@ class Circle
     public:
     // NOTE: we allow a circle with a zero radius
     // TODO: consider storing data as int, allowing for negative circle center
-    Circle(const Point& center, const size_t radius) :
+    Circle(const Cell& center, const size_t radius) :
         m_center(center), m_radius(radius)
     {
     }
 
-    Point center() const
+    Cell center() const
     {
         return m_center;
     }
@@ -101,7 +100,7 @@ class Circle
     }
 
     private:
-    Point m_center;
+    Cell m_center;
     size_t m_radius;
 };
 
@@ -113,7 +112,7 @@ class GridCircle
     static void visit(const Circle& circle, const GridIndexer& grid, Callback callback)
     {
         const size_t r = circle.radius();
-        const Point c = circle.center();
+        const Cell c = circle.center();
 
         const size_t xLimit = grid.numX() - 1;
         const size_t yLimit = grid.numY() - 1;

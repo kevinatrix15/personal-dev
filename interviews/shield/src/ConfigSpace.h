@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Grid.h"
-#include "Point.h"
+#include "Cell.h"
 
 #include <algorithm>
 #include <ostream>
@@ -9,6 +9,9 @@
 #include <string>
 #include <vector>
 
+/**
+ * @brief Enumerator for indicating the type of each cell in the domain.
+ */
 enum class cell_state: uint8_t
 {
     FREE,
@@ -16,6 +19,12 @@ enum class cell_state: uint8_t
     PADDED
 };
 
+/**
+ * @brief Class used for storing data on a 2D grid, with convenience methods for natural
+ * data access, while storing data in a 1D vector for improved cache performance.
+ * 
+ * @tparam T The data type.
+ */
 template<typename T>
 class DataMap : public GridIndexer
 {
@@ -42,9 +51,9 @@ class DataMap : public GridIndexer
         return m_data[GridIndexer::idxFrom(xIdx, yIdx)];
     }
 
-    T at(const Point& p) const
+    T at(const Cell& c) const
     {
-        return m_data[GridIndexer::idxFrom(p)];
+        return m_data[GridIndexer::idxFrom(c)];
     }
 
     typename std::vector<T>::reference at(const size_t xIdx, const size_t yIdx)
@@ -52,17 +61,15 @@ class DataMap : public GridIndexer
         return m_data[GridIndexer::idxFrom(xIdx, yIdx)];
     }
 
-    typename std::vector<T>::reference at(const Point& p)
+    typename std::vector<T>::reference at(const Cell& c)
     {
-        return m_data[GridIndexer::idxFrom(p)];
+        return m_data[GridIndexer::idxFrom(c)];
     }
 
     friend std::ostream& operator<<(std::ostream& os, const DataMap& dataMap)
     {
         for (size_t yIdx = 0; yIdx < dataMap.numY(); ++yIdx) {
             for (size_t xIdx = 0; xIdx < dataMap.numX(); ++xIdx) {
-                // TODO: decide how to handle casting here as T may not have
-                // a valid compatible conversion for <<
                 os << static_cast<int>(dataMap.at(xIdx, yIdx)) << (xIdx < dataMap.numX() - 1 ? " " : "");
             }
             os << std::endl;
@@ -74,47 +81,22 @@ class DataMap : public GridIndexer
     std::vector<T> m_data;
 };
 
-#if 0
-// TODO: consider dissolving this into ConfigurationSpace class as it doesn't add much value...
-class CellStateMap : public GridIndexer
-{
-    public:
-    CellStateMap(const Grid& grid) : m_grid(grid), m_states(grid.size(), cell_state::FREE)
-    {
-        // do nothing
-    }
-
-    cell_state operator()(const size_t xIdx, const size_t yIdx) const
-    {
-        return m_states[m_grid(xIdx, yIdx)];
-    }
-
-    cell_state& operator()(const size_t xIdx, const size_t yIdx)
-    {
-        return m_states[m_grid(xIdx, yIdx)];
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, const CellStateMap& states)
-    {
-        for (size_t yIdx = 0; yIdx < states.m_grid.numY(); ++yIdx) {
-            for (size_t xIdx = 0; xIdx < states.m_grid.numX(); ++xIdx) {
-                os << static_cast<int>(states(xIdx, yIdx)) << " ";
-            }
-            os << std::endl;
-        }
-        return os;
-    };
-
-    private:
-    Grid m_grid;
-    std::vector<cell_state> m_states;
-};
-#endif
-
+/**
+ * @brief Class used for defining the configuration space, including obstacles.
+ * NOTE: the domain boundaries and obstacles are padded by the robot's radius to
+ * limit its work space.
+ */
 class ConfigurationSpace : public GridIndexer
 {
     public:
     // NOTE: we assume the robot radius an integer value, which can be zero as a special case
+    /**
+     * @brief Construct a new Configuration Space object.
+     * 
+     * @param numX The number of cells in the x-dimension in the task space.
+     * @param numY The number of cells in the y-dimension in the task space.
+     * @param robotRadius The robot radius, in number of cells.
+     */
     ConfigurationSpace(const size_t numX, const size_t numY, const size_t robotRadius) :
         GridIndexer(numX, numY), m_robotRadius(robotRadius),
         m_cellStates(std::make_pair(numX, numY), cell_state::FREE)
@@ -123,24 +105,42 @@ class ConfigurationSpace : public GridIndexer
         assignBoundaryCellStates();
     }
 
+    /**
+     * @brief Construct a new Configuration Space object, taking a pre-constructed map of
+     * cell states.
+     * 
+     * @param cellStates The pre-constructed cell states.
+     * @param robotRadius The robot's radius, in number of cells.
+     */
     ConfigurationSpace(const DataMap<cell_state>& cellStates, const size_t robotRadius) :
       GridIndexer(cellStates), m_robotRadius(robotRadius), m_cellStates(cellStates)
     {
         assignBoundaryCellStates();
     }
 
-    size_t robotRadius() const
-    {
-      return m_robotRadius;
-    }
-
+    /**
+     * @brief Add circular obstacles to the configuration space.
+     * NOTE: Padding is added around each object to account for the robot's radius.
+     * TODO: FUTURE WORK- create polymorphic obstacles to enable different shapes.
+     * 
+     * @param obstacles The obstacles to add.
+     */
     void addObstacles(const std::vector<Circle>& obstacles)
     {
-        // add obstacles
         // add padding around obstacles
         for (const auto& obstacle : obstacles) {
             // extend obstacles with robot radius
             const Circle padded(obstacle.center(), obstacle.radius() + m_robotRadius);
+            
+            // Add padding around circle obstacles to account for robot radius  
+            // TODO: FUTURE WORK- this revisits the same cells as below. Add visitor method
+            // which only visits the padded region to reduce cost
+            GridCircle::visit(padded, *this, [this](const size_t xIdx, const size_t yIdx) {
+                m_cellStates.at(xIdx, yIdx) = cell_state::PADDED;
+            }
+            );
+
+            // Mark the obstacles
             GridCircle::visit(padded, *this, [this](const size_t xIdx, const size_t yIdx) {
                 m_cellStates.at(xIdx, yIdx) = cell_state::OBJECT;
             }
@@ -148,26 +148,44 @@ class ConfigurationSpace : public GridIndexer
         }
     }
 
-    bool isAccessible(const Point& p) const
+    /**
+     * @brief Check whether a cell is accessible (i.e., within the task space and unblocked).
+     * 
+     * @param c The cell to check.
+     * @return true If accessible, else false.
+     */
+    bool isAccessible(const Cell& c) const
     {
-        return contains(p) && m_cellStates.at(p) == cell_state::FREE;
+        return contains(c) && m_cellStates.at(c) == cell_state::FREE;
     }
 
-    std::vector<Point> getAccessibleNbrs(const Point& p) const
+    /**
+     * @brief Get all accessible neighbors of a given cell, where accessibility is defined
+     * by the above method. A given cell can have up to eight neighbors.
+     * 
+     * @param c The cell to check.
+     * @return std::vector<Cell> The set of accessible neighbors.
+     */
+    std::vector<Cell> getAccessibleNbrs(const Cell& c) const
     {
-        std::vector<Point> nbrs;
-        const size_t minX = p.x() > 0 ? p.x() - 1 : p.x();
-        const size_t minY = p.y() > 0 ? p.y() - 1 : p.y();
-        const size_t maxX = p.x() < numX() - 1 ? p.x() + 1 : p.x();
-        const size_t maxY = p.y() < numY() - 1 ? p.y() + 1 : p.y();
+        std::vector<Cell> nbrs;
+        const size_t minX = c.x() > 0 ? c.x() - 1 : c.x();
+        const size_t minY = c.y() > 0 ? c.y() - 1 : c.y();
+        const size_t maxX = c.x() < numX() - 1 ? c.x() + 1 : c.x();
+        const size_t maxY = c.y() < numY() - 1 ? c.y() + 1 : c.y();
         for (size_t yIdx = minY; yIdx <= maxY; ++yIdx) {
             for (size_t xIdx = minX; xIdx <= maxX; ++xIdx) {
                 if (m_cellStates.at(xIdx, yIdx) == cell_state::FREE) {
-                    nbrs.emplace_back(Point(xIdx, yIdx));
+                    nbrs.emplace_back(Cell(xIdx, yIdx));
                 }
             }
         }
         return nbrs;
+    }
+
+    size_t robotRadius() const
+    {
+      return m_robotRadius;
     }
 
     friend std::ostream& operator<<(std::ostream& os, const ConfigurationSpace& space)
@@ -180,6 +198,10 @@ class ConfigurationSpace : public GridIndexer
     size_t m_robotRadius;
     DataMap<cell_state> m_cellStates;
 
+    /**
+     * @brief Assign padding to the cells within the robot's radius around the outside
+     * of the task space.
+     */
     void assignBoundaryCellStates()
     {
         // TODO: add visitRowsAndCols() to Grid class, providing a range
@@ -215,16 +237,12 @@ class ConfigurationSpace : public GridIndexer
         padRowsAndCols(allRows, rightCols);
     }
 
-    // TODO: consider using c++ ranges for this
     void padRowsAndCols(const std::vector<size_t>& rows, const std::vector<size_t>& cols)
     {
-        // TODO: replace with for_each and lambda?
         for (const size_t yIdx : rows) {
             for (const size_t xIdx : cols) {
-                // TODO: fix this after refactoring () overload
                 m_cellStates.at(xIdx, yIdx) = cell_state::PADDED;
             }
         }
     }
-
 };

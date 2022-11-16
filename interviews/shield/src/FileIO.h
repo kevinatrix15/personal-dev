@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Map.h"
-#include "Point.h"
+#include "ConfigSpace.h"
+#include "Cell.h"
 
 #include <filesystem>
 #include <fstream>
@@ -89,7 +89,7 @@ class ConfigSpaceIO
 class SolutionPathIO
 {
   public:
-  static void write(const std::vector<Point>& solutionPath,
+  static void write(const std::vector<Cell>& solutionPath,
                     const std::filesystem::path& filePath)
   {
     // create directory structure
@@ -107,7 +107,7 @@ class SolutionPathIO
     }
   }
 
-  static std::vector<Point> read(const std::filesystem::path& filePath)
+  static std::vector<Cell> read(const std::filesystem::path& filePath)
   {
     // check file exists and can be read
     if (!std::filesystem::exists(filePath)) {
@@ -122,12 +122,12 @@ class SolutionPathIO
     try {
       std::string line;
       std::string entry;
-      std::vector<Point> path;
+      std::vector<Cell> path;
       while (getline(inStream, line)) {
         std::stringstream s(line);
         
         // read the x and y components and create the point
-        Point p;
+        Cell p;
         getline(s, entry, DELIM);
         p.x() = static_cast<size_t>(std::stoi(entry));
         getline(s, entry, DELIM);
