@@ -67,7 +67,7 @@ int main(int argc, char** argv)
     case obstacle_config::IMPOSSIBLE:
     {
       // single circle in center of domain with radius spanning the narrow dimension
-      const size_t minRadius = std::min(nx, ny);
+      const size_t minRadius = std::min(nx, ny)/2;
       const Cell midPt = Cell(nx/2, ny/2);
       obstacles.emplace_back(Circle(midPt, minRadius));
       break;
