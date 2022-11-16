@@ -38,14 +38,17 @@ class ConfigSpaceIO
   static ConfigurationSpace read(const std::filesystem::path& filePath)
   {
     // check file exists and can be read
-    checkFileForRead(filePath);
-    std::ifstream inStream(filePath, std::ios::in);
-    checkStreamForRead(inStream, filePath);
+    if (!std::filesystem::exists(filePath)) {
+      throw std::runtime_error("File not found for reading: " + filePath.string());
+    }
 
-    std::vector<cell_state> states;
-    std::string line;
+    std::ifstream inStream(filePath, std::ios::in);
+    if (!inStream) {
+      throw std::runtime_error("Failed to open file for reading: " + filePath.string());
+    }
 
     try {
+      std::string line;
       // assign robot radius
       getline(inStream, line);
       const size_t robotRadius = static_cast<size_t>(std::stoi(line));
@@ -81,19 +84,63 @@ class ConfigSpaceIO
       throw(e);
     }
   }
+};
 
-  private:
-  static void checkFileForRead(const std::filesystem::path& filePath)
+class SolutionPathIO
+{
+  public:
+  static void write(const std::vector<Point>& solutionPath,
+                    const std::filesystem::path& filePath)
   {
-    if (!std::filesystem::exists(filePath)) {
-      throw std::runtime_error("File not found for reading: " + filePath.string());
+    // create directory structure
+    std::filesystem::create_directories(filePath.parent_path());
+
+    // create file ofstream
+    std::ofstream outStream(filePath.string(), std::ios::out);
+    if (!outStream) {
+      throw std::runtime_error("Failed to open file for writing: " + filePath.string());
+    }
+
+    // write data to file using object's << operator
+    for (const auto& pt : solutionPath) {
+      outStream << pt.x() << DELIM << pt.y() << std::endl;
     }
   }
 
-  static void checkStreamForRead(const std::ifstream& inStream, const std::filesystem::path& filePath)
+  static std::vector<Point> read(const std::filesystem::path& filePath)
   {
+    // check file exists and can be read
+    if (!std::filesystem::exists(filePath)) {
+      throw std::runtime_error("File not found for reading: " + filePath.string());
+    }
+
+    std::ifstream inStream(filePath, std::ios::in);
     if (!inStream) {
       throw std::runtime_error("Failed to open file for reading: " + filePath.string());
+    }
+
+    try {
+      std::string line;
+      std::string entry;
+      std::vector<Point> path;
+      while (getline(inStream, line)) {
+        std::stringstream s(line);
+        
+        // read the x and y components and create the point
+        Point p;
+        getline(s, entry, DELIM);
+        p.x() = static_cast<size_t>(std::stoi(entry));
+        getline(s, entry, DELIM);
+        p.y() = static_cast<size_t>(std::stoi(entry));
+
+        // add the point to the path
+        path.emplace_back(p);
+      }
+      return path;
+    }
+    catch (const std::exception& e) {
+      std::cerr << "Error reading configuration space data: " << e.what() << std::endl;
+      throw(e);
     }
   }
 };

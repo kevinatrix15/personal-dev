@@ -32,7 +32,7 @@ int main(int argc, char** argv)
     IMPOSSIBLE,
     SIMPLE,
     COMPLEX,
-    RANDOM
+    MAZE
   };
   const obstacle_config obstacleCase = static_cast<obstacle_config>(std::stoi(argv[4]));
 
@@ -41,7 +41,7 @@ int main(int argc, char** argv)
   // II- impossible path- single circle in center of domain = max(M, N)
   // III- simple path, following diagonal- circles at opposite corners from start and goal
   // IV- more complex path 
-  // V- random obstacle generation
+  // V- Maze- staggered barriers
 
   // TODO: make interactive assignment of grid size and robot radius
   ConfigurationSpace cSpace(nx, ny, robotRadius);
@@ -98,6 +98,41 @@ int main(int argc, char** argv)
 
       break;
     }
+    case obstacle_config::MAZE:
+    {
+      // two circles at opposite corners
+      // TODO: fix the below- it runs into nx and is out of bounds
+      const size_t radius = static_cast<int>(std::min(nx, ny) / 12) - static_cast<int>(robotRadius);
+      obstacles.emplace_back(Circle({nx/5, 0}, radius));
+      obstacles.emplace_back(Circle({nx/5, ny/6}, radius));
+      obstacles.emplace_back(Circle({nx/5, ny/3}, radius));
+      obstacles.emplace_back(Circle({nx/5, ny/2}, radius));
+      obstacles.emplace_back(Circle({nx/5, 2*ny/3}, radius));
+      obstacles.emplace_back(Circle({nx/5, 5*ny/6}, radius));
+
+      obstacles.emplace_back(Circle({2*nx/5, ny/6}, radius));
+      obstacles.emplace_back(Circle({2*nx/5, ny/3}, radius));
+      obstacles.emplace_back(Circle({2*nx/5, ny/2}, radius));
+      obstacles.emplace_back(Circle({2*nx/5, 2*ny/3}, radius));
+      obstacles.emplace_back(Circle({2*nx/5, 5*ny/6}, radius));
+      // obstacles.emplace_back(Circle({2*nx/5, ny-1}, radius));
+
+      obstacles.emplace_back(Circle({3*nx/5, 0}, radius));
+      obstacles.emplace_back(Circle({3*nx/5, ny/6}, radius));
+      obstacles.emplace_back(Circle({3*nx/5, ny/3}, radius));
+      obstacles.emplace_back(Circle({3*nx/5, ny/2}, radius));
+      obstacles.emplace_back(Circle({3*nx/5, 2*ny/3}, radius));
+      obstacles.emplace_back(Circle({3*nx/5, 5*ny/6}, radius));
+
+      obstacles.emplace_back(Circle({4*nx/5, ny/6}, radius));
+      obstacles.emplace_back(Circle({4*nx/5, ny/3}, radius));
+      obstacles.emplace_back(Circle({4*nx/5, ny/4}, radius));
+      obstacles.emplace_back(Circle({4*nx/5, 4*ny/3}, radius));
+      obstacles.emplace_back(Circle({4*nx/5, 5*ny/6}, radius));
+      // obstacles.emplace_back(Circle({4*nx/5, ny-1}, radius));
+
+      break;
+    }
     default:
       throw std::runtime_error("Invalid obstacleCase argument: " + std::to_string(static_cast<int>(obstacleCase)));
   }
@@ -113,9 +148,6 @@ int main(int argc, char** argv)
   cSpace.addObstacles(obstacles);
   std::cout << cSpace;
 
-  // write map
-  const std::filesystem::path cSpaceFile("./output/config-space.txt");
-  ConfigSpaceIO::write(cSpace, cSpaceFile);
 
   // read map
   // ConfigurationSpace cSpace2 = ConfigSpaceIO::read(cSpaceFile);
@@ -124,11 +156,12 @@ int main(int argc, char** argv)
   AStar search(cSpace);
   const std::vector<Point> path = search.searchPath({robotRadius + 1, robotRadius + 1}, {cSpace.numX()-robotRadius - 1, cSpace.numY()-robotRadius - 1});
 
-  //std::cout << "Path: " << std::endl;
-  //for (const auto& p : path) {
-    //std::cout << p << std::endl;
-  //}
-  //std::cout << std::endl;
+  // write data
+  const std::filesystem::path cSpaceFile("./output/config-space.txt");
+  ConfigSpaceIO::write(cSpace, cSpaceFile);
+
+  const std::filesystem::path pathFile("./output/solution-path.txt");
+  SolutionPathIO::write(path, pathFile);
 
   return 0;
 }

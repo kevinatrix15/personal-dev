@@ -63,7 +63,7 @@ class DataMap : public GridIndexer
             for (size_t xIdx = 0; xIdx < dataMap.numX(); ++xIdx) {
                 // TODO: decide how to handle casting here as T may not have
                 // a valid compatible conversion for <<
-                os << static_cast<int>(dataMap.at(xIdx, yIdx)) << " ";
+                os << static_cast<int>(dataMap.at(xIdx, yIdx)) << (xIdx < dataMap.numX() - 1 ? " " : "");
             }
             os << std::endl;
         }
