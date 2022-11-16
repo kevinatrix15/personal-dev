@@ -15,6 +15,12 @@
 ## Approach
 After spending time researching various path planning algorithms, I chose to go with the A* search algorithm. There were a number of factors that led me to select this approach. Since this problem deals with a static environment with full view of all obstacles, it made sense to select from global algorithms as opposed to local. I first looked at the Dijkstra algorithm due to its general robustness, but the A*'s advantages introduced by using heuristics as a 'best-first' search approach was appealing for improved efficiency. Additionally, given to the various heuristics that may be applied, it leaves open the possibility of further exploration for optimization. The tradeoff of such an approach is its relatively high memory complexity, but given that this is currently meant for running on a PC this isn't a concern for now.
 
+## Additional Considerations
+In the interest of time, it is not necessary to implement the following, but please briefly (< 150 words total) answer how you would adjust your solution to address these issues.
+1. Performance - What is the bottleneck in your library? How could you go about improving performance in the future?
+  
+2. Modularity - How would you handle additional planning algorithms and new methods of updating the map?
+3. Cross-Platform - How would you alter your library to support multiple Operating Systems or multiple processors with different instruction sets?
 
 ## Solutions
 The example application is demonstrated in the code under `src/Main.cpp`. The motion planning solution itself is implemented in `MotionPlanning.h` Other supporting functionality has been implemented as a modular library in various classes contained in `src/`.
