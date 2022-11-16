@@ -7,14 +7,14 @@
  */
 #pragma once
 
-#include "ConfigSpace.h"
 #include "Cell.h"
+#include "ConfigSpace.h"
 
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <string>
 #include <sstream>
+#include <string>
 
 constexpr char DELIM = ' ';
 
@@ -26,7 +26,7 @@ class ConfigSpaceIO
   public:
   /**
    * @brief Write the ConfigurationSpace data to a specified path.
-   * 
+   *
    * @param configSpace The configuration space object.
    * @param filePath The file to be written.
    * NOTE: If the file exists, it will be overwritten.
@@ -41,7 +41,8 @@ class ConfigSpaceIO
     // create file ofstream
     std::ofstream outStream(filePath.string(), std::ios::out);
     if (!outStream) {
-      throw std::runtime_error("Failed to open file for writing: " + filePath.string());
+      throw std::runtime_error("Failed to open file for writing: " +
+                               filePath.string());
     }
 
     // write header info
@@ -56,7 +57,7 @@ class ConfigSpaceIO
   /**
    * @brief Read ConfigurationSpace data from a specified file and return a
    * constructed ConfigurationSpace object.
-   * 
+   *
    * @param filePath The file path.
    * @return ConfigurationSpace The constructed ConfigurationSpace object.
    */
@@ -64,12 +65,14 @@ class ConfigSpaceIO
   {
     // check file exists and can be read
     if (!std::filesystem::exists(filePath)) {
-      throw std::runtime_error("File not found for reading: " + filePath.string());
+      throw std::runtime_error("File not found for reading: " +
+                               filePath.string());
     }
 
     std::ifstream inStream(filePath, std::ios::in);
     if (!inStream) {
-      throw std::runtime_error("Failed to open file for reading: " + filePath.string());
+      throw std::runtime_error("Failed to open file for reading: " +
+                               filePath.string());
     }
 
     try {
@@ -89,7 +92,7 @@ class ConfigSpaceIO
       while (getline(inStream, line)) {
         std::vector<cell_state> row;
         std::stringstream s(line);
-        while(getline(s, entry, DELIM)) {
+        while (getline(s, entry, DELIM)) {
           row.emplace_back(static_cast<cell_state>(std::stoi(entry)));
         }
         // append the row to the end of the cellData
@@ -103,9 +106,9 @@ class ConfigSpaceIO
       // construct and return the ConfigurationSpace
       DataMap<cell_state> dataMap(std::make_pair(nx, ny), cellData);
       return ConfigurationSpace(dataMap, robotRadius);
-    } 
-    catch (const std::exception& e) {
-      std::cerr << "Error reading configuration space data: " << e.what() << std::endl;
+    } catch (const std::exception& e) {
+      std::cerr << "Error reading configuration space data: " << e.what()
+                << std::endl;
       throw(e);
     }
   }
@@ -119,7 +122,7 @@ class SolutionPathIO
   public:
   /**
    * @brief Write a path of cells to a specified path.
-   * 
+   *
    * @param solutionPath The path of cells to be written.
    * @param filePath The file to be written.
    * NOTE: If the file exists, it will be overwritten.
@@ -134,7 +137,8 @@ class SolutionPathIO
     // create file ofstream
     std::ofstream outStream(filePath.string(), std::ios::out);
     if (!outStream) {
-      throw std::runtime_error("Failed to open file for writing: " + filePath.string());
+      throw std::runtime_error("Failed to open file for writing: " +
+                               filePath.string());
     }
 
     // write data to file using object's << operator
@@ -144,8 +148,9 @@ class SolutionPathIO
   }
 
   /**
-   * @brief Read ell path data from a specified file and return a vector of path cells.
-   * 
+   * @brief Read ell path data from a specified file and return a vector of path
+   * cells.
+   *
    * @param filePath The file path.
    * @return std::vector<Cell> The cell path.
    */
@@ -153,12 +158,14 @@ class SolutionPathIO
   {
     // check file exists and can be read
     if (!std::filesystem::exists(filePath)) {
-      throw std::runtime_error("File not found for reading: " + filePath.string());
+      throw std::runtime_error("File not found for reading: " +
+                               filePath.string());
     }
 
     std::ifstream inStream(filePath, std::ios::in);
     if (!inStream) {
-      throw std::runtime_error("Failed to open file for reading: " + filePath.string());
+      throw std::runtime_error("Failed to open file for reading: " +
+                               filePath.string());
     }
 
     try {
@@ -167,7 +174,7 @@ class SolutionPathIO
       std::vector<Cell> path;
       while (getline(inStream, line)) {
         std::stringstream s(line);
-        
+
         // read the x and y components and create the point
         Cell p;
         getline(s, entry, DELIM);
@@ -179,9 +186,9 @@ class SolutionPathIO
         path.emplace_back(p);
       }
       return path;
-    }
-    catch (const std::exception& e) {
-      std::cerr << "Error reading configuration space data: " << e.what() << std::endl;
+    } catch (const std::exception& e) {
+      std::cerr << "Error reading configuration space data: " << e.what()
+                << std::endl;
       throw(e);
     }
   }
