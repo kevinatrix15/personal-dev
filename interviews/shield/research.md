@@ -103,3 +103,87 @@ Idea: rather than dealing with distance checking and assignment, let's instead s
   * Fill in obstacles with obstacle value
   * Add padding around obstacles with padding value
 * Search for best safe path
+
+
+# Visualization
+* Simple- write data to stdout, then use gnuplot to plot: https://stackoverflow.com/questions/15844153/best-c-library-to-display-an-image-from-a-2d-array
+
+
+# TODO:
+1. Write map and path to file, and read back in
+2. Clean up MotionPlanning A* implementation
+4. Rename Point to Cell
+6. Perform profiling to identify bottlenecks
+
+5. Rearrange files to be more cohesive
+3. Make slides
+7. Unit test critical classes
+8. Add function & class documentation / README
+9. Construct AStar class with custom heuristic function, and run a few comparison cases
+   1.  Manhattan distance, diagonal distance, euclidean distance, h = 0 (Djikstra)?
+
+
+## Presentation Brainstorming:
+
+### Possible topics to cover:
+* Problem description:
+  * Static configuration space
+  * Dimensionaltiy of the c-space
+    * 2D robot
+* Collision avoidance approach:
+  * Rather than determining the local distance to the nearest obstacle for each cell, chose to simply add padding to all obstacles based on the robot radius and consider distance in the search algorithm
+  * TODO: add padding separately around obstacles to enable differentiation with visualization
+* Reasoning behind Selection of A* compared to others
+* Selection of data structures with performance estimations
+
+* Testing
+  * Scenario I- no obstacles
+  * Scenario II- non-existent path
+  * Scenario III- simple path, following diagonal
+  * Scenario IV- more complex path 
+  * Scenario V- random obstacle generation
+* Performance evaluation:
+  * Profiling output- what are the bottlenecks, and how might I address them?
+  * Scalability-
+    * add timing output
+    * Take Scenario V above, and scale all dimensions across various scales
+    * Report average time to run each case (repeat each ~3-5 times)
+  * Heuristic selection- provide means for specifying which heuristic to use
+    * h = 0 for Dijikstra
+    * h = diagonal, euclidean, manhattan
+    * Repeat scalability study above
+* Live Demo
+
+* Class design
+  * Interaction diagram
+  * UML diagram
+* Highlight designs that helped improve expressiveness / readability / flexibility
+  * GetActiveNeighbors
+  * GridIndexer-
+    * easily represent 2D points on 1D vector, ensuring better cache performance without having to explicitly calculate 1D index from 2D
+    * Ability to index off of x, y, or Point
+  * DataMap- using GridIndexer
+
+    // Data structure considerations:
+    // Closed list
+    // operations:
+    // - check if a node with same location (index) has a smaller f
+    //      * implies storing node data, including at least position and f
+    //
+    // Open list
+    // operations:
+    // - readily get the node with smallest 'f'
+    // - add children (emplace())
+    // - remove top candidate (pop())
+    // - check for other nodes with same position, compare whether have smaller 'f'
+
+    // operations:
+    // initialize all nodes in nodeMap with invalid (UNSET) values
+
+    // set nodeMap(start):
+    //  f = 0
+    //  g = 0
+    //  h = 0
+    //  parent = start (x(), y())
+
+    // put starting cell in unexplored (f = 0)

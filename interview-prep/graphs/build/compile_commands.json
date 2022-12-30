@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/kbriggs/source/personal-dev/interview-prep/graphs/build",
+  "command": "/usr/bin/clang++    -g   -o CMakeFiles/Graphs.dir/main.cpp.o -c /home/kbriggs/source/personal-dev/interview-prep/graphs/main.cpp",
+  "file": "/home/kbriggs/source/personal-dev/interview-prep/graphs/main.cpp"
+}
+]

@@ -131,19 +131,6 @@ class OrderManager
         // do nothing
     }
     
-    // Use cases:
-    // * Buy- Store the order info.
-    // * Sell- Store the order info.
-    // * Cancel- Order ID provided. If found, delete the order, else ignore.
-    // * Modify- Check order exists. Update operation, price, quantity. NOTE: can't modify IOC type! 
-    // * Print- If other columns, just ignore. Print current order map (m_priceBook). Split into 'SELL'
-    // and 'BUY' sections, each in decreasing order based on price (Need to do sort operation). Sum
-    // all orders with the same price
-    
-    // WARNING: need close coupling between m_priceBook and m_buys/m_sells... (Example 4)
-    
-    // QUESTION: Example 5- is the TRADE output correct? Seems ORDER1 was processed first, so shouldn't it
-    // be traded first??
     void buy(const string& orderID, const Order& order)
     {
         const int updatedQty = checkPriceCrossOnBuy({order.price, order.quantity, orderID});
@@ -188,10 +175,6 @@ class OrderManager
     
     void cancel(const string& orderID)
     {
-        // erase the entry with orderID key if it exists
-        // TODO: update all data structures / maps here
-        // figure out whether the order is a buy or sell, and subtract quantity at
-        // the order price from corect maps
         if (m_buysMap.count(orderID) > 0) {
             const int price = m_buysMap[orderID].price;
 
@@ -328,8 +311,8 @@ class OrderManager
 
             // iterate over sells time map, checking for prices <= buy price
             // this ensures we choose the earliest order first
-            size_t i = 0;
-            while (!m_sellsTimePriorityMap.empty() && remainingBuyQty > 0) {
+            vector<string> toCancel;
+            for (size_t i = 0; i < m_sellsTimePriorityMap.size(); ++i) {
                 const PriceID sellInfo = m_sellsTimePriorityMap[i];
                 if (sellInfo.price <= buyInfo.price) {
                     // O(1) access of unordered_map
@@ -352,10 +335,16 @@ class OrderManager
                     else {
                         Modification mod(SELL, sellInfo.price, sellQty - tradeQty);
                         modify(sellInfo.orderID, mod);
-                        // only increment if we don't erace elements
-                        ++i;
                     }
                 }
+                if (remainingBuyQty == 0) {
+                    break;
+                }
+            }
+
+            // cancel all empty orders
+            for (auto id : toCancel) {
+                cancel(id);
             }
         }
         return remainingBuyQty;
@@ -375,8 +364,8 @@ class OrderManager
 
             // iterate over buys time map, checking for prices >= sell price
             // this ensures we choose the earliest order first
-            size_t i = 0;
-            while (!m_buysTimePriorityMap.empty() && remainingSellQty > 0) {
+            vector<string> toCancel;
+            for (size_t i = 0; i < m_buysTimePriorityMap.size(); ++i) {
                 const PriceID buyInfo = m_buysTimePriorityMap[i];
                 if (sellInfo.price <= buyInfo.price) {
                     // O(1) access of unordered_map
@@ -390,15 +379,21 @@ class OrderManager
 
                     // cancel or subtract traded buys
                     if (tradeQty == buyQty) {
-                        cancel(buyInfo.orderID);
+                        toCancel.emplace_back(buyInfo.orderID);
                     }
                     else {
                         Modification mod(BUY, buyInfo.price, buyQty - tradeQty);
                         modify(buyInfo.orderID, mod);
-                        // only increment if we don't erace elements
-                        ++i;
                     }
                 }
+                if (remainingSellQty == 0) {
+                    break;
+                }
+            }
+
+            // cancel all empty orders
+            for (auto id : toCancel) {
+                cancel(id);
             }
         }
         return remainingSellQty;

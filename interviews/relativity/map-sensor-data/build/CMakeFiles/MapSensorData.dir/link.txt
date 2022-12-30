@@ -1,0 +1,1 @@
+/usr/bin/g++-10  -g  -rdynamic CMakeFiles/MapSensorData.dir/main.cpp.o  -o MapSensorData 

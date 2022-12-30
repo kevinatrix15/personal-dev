@@ -1,0 +1,21 @@
+﻿  Main.cpp
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\GroupAnagrams\Main.cpp(28,69): error C2440: 'initializing': cannot convert from 'void' to 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\GroupAnagrams\Main.cpp(28,29): message : Expressions of type void cannot be converted to other types
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\GroupAnagrams\Main.cpp(36,23): error C2429: language feature 'structured bindings' requires compiler flag '/std:c++17'
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\GroupAnagrams\Main.cpp(37,32): error C2672: 'begin': no matching overloaded function found
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\GroupAnagrams\Main.cpp(37,38): error C2893: Failed to specialize function template 'unknown-type std::begin(_Container &)'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.28.29333\include\xutility(2169): message : see declaration of 'std::begin'
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\GroupAnagrams\Main.cpp(37,38): message : With the following template arguments:
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\GroupAnagrams\Main.cpp(37,38): message : '_Container=unknown-type'
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\GroupAnagrams\Main.cpp(37,38): error C2784: 'const _Elem *std::begin(std::initializer_list<_Elem>) noexcept': could not deduce template argument for 'std::initializer_list<_Elem>' from 'unknown-type'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.28.29333\include\initializer_list(57): message : see declaration of 'std::begin'
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\GroupAnagrams\Main.cpp(37,32): error C2672: 'end': no matching overloaded function found
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\GroupAnagrams\Main.cpp(37,38): error C2893: Failed to specialize function template 'unknown-type std::end(_Container &)'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.28.29333\include\xutility(2179): message : see declaration of 'std::end'
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\GroupAnagrams\Main.cpp(37,38): message : With the following template arguments:
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\GroupAnagrams\Main.cpp(37,38): message : '_Container=unknown-type'
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\GroupAnagrams\Main.cpp(37,38): error C2784: 'const _Elem *std::end(std::initializer_list<_Elem>) noexcept': could not deduce template argument for 'std::initializer_list<_Elem>' from 'unknown-type'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.28.29333\include\initializer_list(63): message : see declaration of 'std::end'
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\GroupAnagrams\Main.cpp(37,38): error C3536: '<begin>$L2': cannot be used before it is initialized
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\GroupAnagrams\Main.cpp(37,38): error C3536: '<end>$L2': cannot be used before it is initialized
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\GroupAnagrams\Main.cpp(37,36): error C2100: illegal indirection

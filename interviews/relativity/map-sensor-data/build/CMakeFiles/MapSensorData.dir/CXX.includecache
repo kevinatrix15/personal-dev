@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/kbriggs/source/personal-dev/interviews/relativity/map-sensor-data/main.cpp
+algorithm
+-
+fstream
+-
+iostream
+-
+memory
+-
+sstream
+-
+string
+-
+vector
+-
+

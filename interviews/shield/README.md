@@ -73,6 +73,9 @@ The solution generates two output files, found in the `output/` directory which 
 * The second and third rows are, respectively, the number of columns and rows.
 * The remainder of the file contains a table of values representing the state of each cell in the configuration space. For reference, 0 represents free space accessible to the robot, 1 represents obstacles, and 2 represents padding added around each object and the boundaries to account for the robot's radius.
 
+#### solution-path.txt- 
+This file contains the solution path for the robot, moving from the start position to the goal. It is composed of two columns, with the first representing the x-index and the second the y-index.
+
 ## Visualization
 To avoid introducing additional dependencies to the project, visualization is achieved by running a simple python script which wraps the `save-bb8` executable. The script is found at the top level in `run-save-bb8.py`. It may be executed with the same command line arguments as `save-bb8` described above, as follows:
 ```

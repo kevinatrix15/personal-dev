@@ -30,6 +30,20 @@ constexpr unsigned int NUM_COLS = 3;
 class Mat33
 {
   public:
+  /**
+   * @brief Construct a new 3x3 matrix object, given three column vectors.
+   * @param v0 The first column vector.
+   * @param v1 The second column vector.
+   * @param v2 The third column vector.
+   * 
+   * The constructed matrix takes the form:
+   *
+   *     [[v0.x, v1.x, v2.x]
+   *      [v0.y, v1.y, v2.y]
+   *      [v0.z, v1.z, v2.z]
+   *     ]                  
+   * 
+   */
   Mat33(const Vec3& v0, const Vec3& v1, const Vec3& v2) : col{v0, v1, v2}
   {
     // do nothing

@@ -1,0 +1,102 @@
+167 [33352] INFO perfrun.launcher <> - Launcher main begin
+182 [33352] INFO perfrun.launcher <> - MessageCatalogInit finished
+182 [33352] INFO perfrun.launcher <> - Launcher instance created
+182 [33352] INFO perfrun.launcher <> - argc = 7; cmdline = C:\Program Files (x86)\Intel\oneAPI\vtune\latest\bin64\amplxe-runss.exe --ui-output-format xml --ui-output-fd 1200 --option-file C:\work\ANSYSDev\source\personal-dev\interviews\shield\oldbb8\r002hs\config\runsa.options 
+225 [33352] INFO perfrun.launcher <> - New signal handler callback was added
+393 [33352] INFO perfrun.launcher <> - create msngr2::ICliToolContext
+394 [33352] INFO perfrun.launcher <> - create file finder object
+396 [33352] INFO perfrun.launcher <> - create a result directory: pattern = C:\work\ANSYSDev\source\personal-dev\interviews\shield\oldbb8\r002hs pid = 4294967295
+405 [33352] INFO perfrun.launcher <> - create data directory = C:\work\ANSYSDev\source\personal-dev\interviews\shield\oldbb8\r002hs\data.0
+407 [33352] INFO perfrun.launcher <> - Creating the master collection flag
+423 [33352] INFO perfrun.launcher <> - Done creating the master collection flag
+424 [28788] INFO perfrun.launcher <> - plugin [remoteplug] was disabled because it doesn't support the given collection type.
+427 [28788] INFO perfrun.sdk <> - Allocating TMU :C:\work\ANSYSDev\source\personal-dev\interviews\shield\oldbb8\r002hs\data.0\systemcollector-18524-PKCKBRIGGS2.win.ansys.com.sc
+428 [28788] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+435 [28788] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+435 [28788] INFO perfrun.launcher <> - plugin [gpu] was disabled because it doesn't support the given collection type.
+436 [28788] INFO perfrun.launcher <> - plugin [etw.kernel] was disabled because it doesn't support the given collection type.
+436 [28788] INFO perfrun.launcher <> - plugin [etw.dx] was disabled because it doesn't support the given collection type.
+437 [28788] INFO perfrun.launcher <> - plugin [etw.wsa] was disabled because it doesn't support the given collection type.
+437 [28788] INFO perfrun.mrte <> - system-wide mode is 0
+438 [28788] INFO perfrun.mrte <> - Getting  mrte profiling environment ...
+562 [28788] INFO perfrun.mrte <> - INTEL_MRTE_DATA_DIR=C:\work\ANSYSDev\source\personal-dev\interviews\shield\oldbb8\r002hs\data.0
+562 [28788] INFO perfrun.mrte <> - INTEL_MRTE_HOST_NAME=PKCKBRIGGS2.win.ansys.com
+562 [28788] INFO perfrun.mrte <> - JAVA_TOOL_OPTIONS=-agentlib:amplxe_samplingmrte_javaprof_1.0
+562 [28788] INFO perfrun.mrte <> - PATH=C:\Program Files (x86)\Intel\oneAPI\vtune\latest\bin32\runtime;C:\Program Files (x86)\Intel\oneAPI\vtune\latest\bin64\runtime;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\bin;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\libnvvp;;;C:\Program Files\ImageMagick-7.1.0-Q16-HDRI;C:\Users\kbriggs\Anaconda3;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2017.8.275\windows\mpi\intel64\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64_win\mpirt;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\ia32_win\mpirt;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64_win\compiler;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\ia32_win\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\ProgramData\chocolatey\bin;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\dotnet\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\CMake\bin;C:\work\ANSYSDev\source\disco;C:\Program Files\Git\cmd;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Users\kbriggs\Anaconda3\Scripts;C:\Users\kbriggs\Anaconda3\Library\bin;;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\NVIDIA Corporation\Nsight Compute 2022.2.1\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Mozilla Firefox;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2017.8.275\windows\mpi\intel64\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64_win\mpirt;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\ia32_win\mpirt;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64_win\compiler;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\ia32_win\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\ProgramData\chocolatey\bin;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Inkscape\bin;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\dotnet\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files (x86)\dotnet\;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program File;C:\Users\kbriggs\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\msys64;C:\Program Files (x86)\protoc-21.1-win64\bin;;C:\Users\kbriggs\AppData\Local\Microsoft\WindowsApps;C:\Users\kbriggs\.dotnet\tools
+563 [28788] INFO perfrun.mrte <> - COR_ENABLE_PROFILING=1
+563 [28788] INFO perfrun.mrte <> - COR_PROFILER={AA5E4821-E3B1-479c-B7FF-5AD047D22CED}
+563 [28788] INFO perfrun.mrte <> - COMPLUS_ProfAPI_ProfilerCompatibilitySetting=EnableV2Profiler
+563 [28788] INFO perfrun.mrte <> - CORECLR_ENABLE_PROFILING=1
+563 [28788] INFO perfrun.mrte <> - CORECLR_PROFILER={AA5E4821-E3B1-479c-B7FF-5AD047D22CED}
+563 [28788] INFO perfrun.mrte <> - CORECLR_PROFILER_PATH=C:\Program Files (x86)\Intel\oneAPI\vtune\latest\bin64/amplxe_samplingmrte_clrprof_1.0.dll
+563 [28788] INFO perfrun.mrte <> - INTEL_MRTE_PROFILER_MODE=mixed
+563 [28788] INFO perfrun.mrte <> - Data directory: C:\work\ANSYSDev\source\personal-dev\interviews\shield\oldbb8\r002hs\data.0
+563 [28788] INFO perfrun.mrte <> - Mrte plugin is initialized
+564 [28788] INFO perfrun.launcher <> - plugin [emon] was disabled because it doesn't support the given collection type.
+565 [28788] INFO perfrun.launcher <> - plugin [cuscol] was disabled because it doesn't support the given collection type.
+566 [28788] INFO perfrun.launcher <> - plugin [stdsrc] was disabled because it doesn't support the given collection type.
+566 [28788] INFO perfrun.launcher <> - plugin [sep] was disabled because it doesn't support the given collection type.
+664 [28788] INFO perfrun.sdk <> - runCmd: "C:\Program Files (x86)\Intel\oneAPI\vtune\latest\bin64\sep.exe" -dry-run -ec CPU_CLK_UNHALTED.THREAD,CPU_CLK_UNHALTED.REF_TSC:sample:sa=2300000,INST_RETIRED.ANY:sample:sa=2300000,CPU_CLK_UNHALTED.REF_XCLK,CPU_CLK_UNHALTED.ONE_THREAD_ACTIVE,UOPS_RETIRED.RETIRE_SLOTS:sample:sa=2000003,FP_ARITH_INST_RETIRED.SCALAR_SINGLE,FP_ARITH_INST_RETIRED.128B_PACKED_SINGLE,FP_ARITH_INST_RETIRED.256B_PACKED_SINGLE,FP_ARITH_INST_RETIRED.SCALAR_DOUBLE,FP_ARITH_INST_RETIRED.128B_PACKED_DOUBLE,FP_ARITH_INST_RETIRED.256B_PACKED_DOUBLE,UOPS_EXECUTED.X87,UOPS_EXECUTED.THREAD -experimental
+672 [28788] INFO perfrun.sdk <> - runCmd started PID 796
+903 [28788] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+904 [28788] INFO perfrun.launcher <> - plugin [aoclprofile] was disabled because it doesn't support the given collection type.
+904 [28788] INFO perfrun.tpss <> - initialize tpss controller
+905 [28788] INFO perfrun.launcher <> - plugin [tpss] was disabled because it doesn't support the given collection type.
+905 [28788] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+905 [28788] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+905 [28788] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+905 [28788] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+906 [28788] INFO perfrun.launcher <> - plugin [power] was disabled because it doesn't support the given collection type.
+906 [28788] INFO perfrun.launcher <> - plugin [hwloc] was disabled because it doesn't support the given collection type.
+906 [28788] INFO perfrun.launcher <> - plugin [ipmwatch] was disabled because it doesn't support the given collection type.
+906 [28788] INFO perfrun.launcher <> - plugin [os_counters] was disabled because it doesn't support the given collection type.
+907 [28788] INFO perfrun.launcher <> - plugin [l0_metrics] was disabled because it doesn't support the given collection type.
+908 [33352] INFO perfrun.launcher <> - set environment variable: PATH = C:\Program Files (x86)\Intel\oneAPI\vtune\latest\bin32\runtime;C:\Program Files (x86)\Intel\oneAPI\vtune\latest\bin64\runtime;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\bin;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\libnvvp;;;C:\Program Files\ImageMagick-7.1.0-Q16-HDRI;C:\Users\kbriggs\Anaconda3;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2017.8.275\windows\mpi\intel64\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64_win\mpirt;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\ia32_win\mpirt;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64_win\compiler;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\ia32_win\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\ProgramData\chocolatey\bin;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\dotnet\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\CMake\bin;C:\work\ANSYSDev\source\disco;C:\Program Files\Git\cmd;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Users\kbriggs\Anaconda3\Scripts;C:\Users\kbriggs\Anaconda3\Library\bin;;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\NVIDIA Corporation\Nsight Compute 2022.2.1\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Mozilla Firefox;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2017.8.275\windows\mpi\intel64\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64_win\mpirt;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\ia32_win\mpirt;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64_win\compiler;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\ia32_win\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\ProgramData\chocolatey\bin;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Inkscape\bin;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\dotnet\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files (x86)\dotnet\;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program File;C:\Users\kbriggs\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\msys64;C:\Program Files (x86)\protoc-21.1-win64\bin;;C:\Users\kbriggs\AppData\Local\Microsoft\WindowsApps;C:\Users\kbriggs\.dotnet\tools
+908 [33352] INFO perfrun.launcher <> - set environment variable: INTEL_LIBITTNOTIFY32 = C:\Program Files (x86)\Intel\oneAPI\vtune\latest\bin32\runtime\ittnotify_collector.dll
+909 [33352] INFO perfrun.launcher <> - set environment variable: INTEL_LIBITTNOTIFY64 = C:\Program Files (x86)\Intel\oneAPI\vtune\latest\bin64\runtime\ittnotify_collector.dll
+909 [33352] INFO perfrun.launcher <> - set environment variable: INTEL_ITTNOTIFY_GROUPS = 
+909 [33352] INFO perfrun.launcher <> - set environment variable: INTEL_JIT_PROFILER32 = C:\Program Files (x86)\Intel\oneAPI\vtune\latest\bin32\runtime\ittnotify_collector.dll
+910 [33352] INFO perfrun.launcher <> - set environment variable: INTEL_JIT_PROFILER64 = C:\Program Files (x86)\Intel\oneAPI\vtune\latest\bin64\runtime\ittnotify_collector.dll
+910 [33352] INFO perfrun.launcher <> - set environment variable: OMP_TOOL_LIBRARIES = C:\Program Files (x86)\Intel\oneAPI\vtune\latest\bin32\runtime\ittnotify_collector.dll;C:\Program Files (x86)\Intel\oneAPI\vtune\latest\bin64\runtime\ittnotify_collector.dll
+910 [33352] INFO perfrun.launcher <> - set environment variable: ENABLE_JITPROFILING = 1
+911 [33352] INFO perfrun.launcher <> - set environment variable: CL_CONFIG_USE_VTUNE = True
+911 [33352] INFO perfrun.launcher <> - set environment variable: KMP_FORKJOIN_FRAMES = 0
+912 [33352] INFO perfrun.launcher <> - set environment variable: KMP_FORKJOIN_FRAMES_MODE = 0
+912 [33352] INFO perfrun.launcher <> - set environment variable: OMP_TOOL = disabled
+912 [33352] INFO perfrun.launcher <> - set environment variable: INTEL_MRTE_DATA_DIR = C:\work\ANSYSDev\source\personal-dev\interviews\shield\oldbb8\r002hs\data.0
+913 [33352] INFO perfrun.launcher <> - set environment variable: INTEL_MRTE_HOST_NAME = PKCKBRIGGS2.win.ansys.com
+913 [33352] INFO perfrun.launcher <> - set environment variable: JAVA_TOOL_OPTIONS = -agentlib:amplxe_samplingmrte_javaprof_1.0
+913 [33352] INFO perfrun.launcher <> - set environment variable: PATH = C:\Program Files (x86)\Intel\oneAPI\vtune\latest\bin32\runtime;C:\Program Files (x86)\Intel\oneAPI\vtune\latest\bin64\runtime;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\bin;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\libnvvp;;;C:\Program Files\ImageMagick-7.1.0-Q16-HDRI;C:\Users\kbriggs\Anaconda3;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2017.8.275\windows\mpi\intel64\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64_win\mpirt;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\ia32_win\mpirt;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64_win\compiler;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\ia32_win\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\ProgramData\chocolatey\bin;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\dotnet\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\CMake\bin;C:\work\ANSYSDev\source\disco;C:\Program Files\Git\cmd;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Users\kbriggs\Anaconda3\Scripts;C:\Users\kbriggs\Anaconda3\Library\bin;;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\NVIDIA Corporation\Nsight Compute 2022.2.1\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Mozilla Firefox;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2017.8.275\windows\mpi\intel64\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64_win\mpirt;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\ia32_win\mpirt;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64_win\compiler;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\ia32_win\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\ProgramData\chocolatey\bin;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Inkscape\bin;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\dotnet\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files (x86)\dotnet\;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program File;C:\Users\kbriggs\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\msys64;C:\Program Files (x86)\protoc-21.1-win64\bin;;C:\Users\kbriggs\AppData\Local\Microsoft\WindowsApps;C:\Users\kbriggs\.dotnet\tools
+914 [33352] INFO perfrun.launcher <> - set environment variable: COR_ENABLE_PROFILING = 1
+914 [33352] INFO perfrun.launcher <> - set environment variable: COR_PROFILER = {AA5E4821-E3B1-479c-B7FF-5AD047D22CED}
+914 [33352] INFO perfrun.launcher <> - set environment variable: COMPLUS_ProfAPI_ProfilerCompatibilitySetting = EnableV2Profiler
+914 [33352] INFO perfrun.launcher <> - set environment variable: CORECLR_ENABLE_PROFILING = 1
+914 [33352] INFO perfrun.launcher <> - set environment variable: CORECLR_PROFILER = {AA5E4821-E3B1-479c-B7FF-5AD047D22CED}
+915 [33352] INFO perfrun.launcher <> - set environment variable: CORECLR_PROFILER_PATH = C:\Program Files (x86)\Intel\oneAPI\vtune\latest\bin64/amplxe_samplingmrte_clrprof_1.0.dll
+915 [33352] INFO perfrun.launcher <> - set environment variable: INTEL_MRTE_PROFILER_MODE = mixed
+918 [33352] INFO perfrun.launcher <> - RpcServer: run RPC server to handle requests
+2183 [33352] INFO perfrun.sdk <> - IProcessUtil: the given executable 'C:\work\ANSYSDev\source\personal-dev\interviews\shield\win_build\bin\RelWithDebInfo\save-bb8.exe' is valid.
+2184 [33352] INFO perfrun.launcher <> - Launcher: command line to start before modification = C:\work\ANSYSDev\source\personal-dev\interviews\shield\win_build\bin\RelWithDebInfo\save-bb8.exe 4500 4500 25 5
+2184 [33352] INFO perfrun.launcher <> - Launcher: command line to start after modification = C:\work\ANSYSDev\source\personal-dev\interviews\shield\win_build\bin\RelWithDebInfo\save-bb8.exe 4500 4500 25 5
+2186 [33352] INFO perfrun.launcher <> - ProcessCreator object was created
+2190 [33352] INFO perfrun.launcher <> - Launcher: the process was started in suspend mode
+2194 [28788] INFO perfrun.itt <> - start itt controller for pid #28956
+2306 [33352] INFO perfrun.launcher <> - Launcher: all plugins were started
+2307 [33352] INFO perfrun.launcher <> - DirectoryMonitor object was created
+2307 [33352] INFO perfrun.launcher <> - DirectoryMonitor: a callback was added
+2307 [33352] INFO perfrun.launcher <> - DirectoryMonitor was started with pingTime = 1000
+2307 [33352] INFO perfrun.launcher <> - DeadlineTimer is going to be constructed
+2309 [33352] INFO perfrun.launcher <> - DeadlineTimer: a callback was added
+2327 [33352] INFO perfrun.launcher <> - Launcher: resume the profiled application and  wait its termination or stop command
+8911 [33352] INFO perfrun.launcher <> - Launcher: the profiled application was terminated  with exit code = 0
+8934 [28788] INFO perfrun.itt <> - detach itt controller
+8934 [28788] INFO perfrun.itt <> - detach itt controller done
+8937 [28788] INFO perfrun.sdk <> - De-allocating TMU: C:\work\ANSYSDev\source\personal-dev\interviews\shield\oldbb8\r002hs\data.0\systemcollector-18524-PKCKBRIGGS2.win.ansys.com.sc
+8953 [28788] INFO perfrun.system <> - closed the system trace file: C:\work\ANSYSDev\source\personal-dev\interviews\shield\oldbb8\r002hs\data.0\systemcollector-18524-PKCKBRIGGS2.win.ansys.com.sc
+8953 [33352] INFO perfrun.launcher <> - Launcher: all plugins were stopped.
+8953 [33352] INFO perfrun.launcher <> - DeadlineTimer is going to be destroyed
+8954 [33352] INFO perfrun.launcher <> - DeadlineTimer was destroyed
+8954 [33352] INFO perfrun.launcher <> - DirectoryMonitor object was destroyed
+8955 [33352] WARN perfrun.launcher <> - Stop command is ignored because it is received when collection is already stopped, at file: C:\BB\ANphep2w6r\b\tmpqbc4_m\vcs\perfrun1\launcher\src\command_handler.cpp:226
+8957 [33352] INFO perfrun.launcher <> - Application exit code: 0
+8957 [33352] INFO perfrun.launcher <> - Exit code: 0

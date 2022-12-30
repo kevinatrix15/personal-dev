@@ -1,0 +1,27 @@
+[
+{
+  "directory": "/home/kbriggs/source/personal-dev/interviews/sarcos/build",
+  "command": "/usr/bin/clang++   -I/home/kbriggs/source/personal-dev/interviews/sarcos/googletest/include -isystem /home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googletest/include -isystem /home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googletest  -g   -o CMakeFiles/hiring-quiz.dir/main.cpp.o -c /home/kbriggs/source/personal-dev/interviews/sarcos/main.cpp",
+  "file": "/home/kbriggs/source/personal-dev/interviews/sarcos/main.cpp"
+},
+{
+  "directory": "/home/kbriggs/source/personal-dev/interviews/sarcos/build/googletest/googlemock",
+  "command": "/usr/bin/clang++   -isystem /home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googlemock/include -isystem /home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googlemock -isystem /home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googletest/include -isystem /home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googletest  -g   -Wall -Wshadow -Wconversion -DGTEST_HAS_PTHREAD=1 -fexceptions -W -Wpointer-arith -Wreturn-type -Wcast-qual -Wwrite-strings -Wswitch -Wunused-parameter -Wcast-align -Wchar-subscripts -Winline -Wredundant-decls -o CMakeFiles/gmock_main.dir/src/gmock_main.cc.o -c /home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googlemock/src/gmock_main.cc",
+  "file": "/home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googlemock/src/gmock_main.cc"
+},
+{
+  "directory": "/home/kbriggs/source/personal-dev/interviews/sarcos/build/googletest/googlemock",
+  "command": "/usr/bin/clang++   -I/home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googlemock/include -I/home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googlemock -isystem /home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googletest/include -isystem /home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googletest  -g   -Wall -Wshadow -Wconversion -DGTEST_HAS_PTHREAD=1 -fexceptions -W -Wpointer-arith -Wreturn-type -Wcast-qual -Wwrite-strings -Wswitch -Wunused-parameter -Wcast-align -Wchar-subscripts -Winline -Wredundant-decls -o CMakeFiles/gmock.dir/src/gmock-all.cc.o -c /home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googlemock/src/gmock-all.cc",
+  "file": "/home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googlemock/src/gmock-all.cc"
+},
+{
+  "directory": "/home/kbriggs/source/personal-dev/interviews/sarcos/build/googletest/googletest",
+  "command": "/usr/bin/clang++   -isystem /home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googletest/include -isystem /home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googletest  -g   -Wall -Wshadow -Wconversion -DGTEST_HAS_PTHREAD=1 -fexceptions -W -Wpointer-arith -Wreturn-type -Wcast-qual -Wwrite-strings -Wswitch -Wunused-parameter -Wcast-align -Wchar-subscripts -Winline -Wredundant-decls -o CMakeFiles/gtest_main.dir/src/gtest_main.cc.o -c /home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googletest/src/gtest_main.cc",
+  "file": "/home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googletest/src/gtest_main.cc"
+},
+{
+  "directory": "/home/kbriggs/source/personal-dev/interviews/sarcos/build/googletest/googletest",
+  "command": "/usr/bin/clang++   -I/home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googletest/include -I/home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googletest  -g   -Wall -Wshadow -Wconversion -DGTEST_HAS_PTHREAD=1 -fexceptions -W -Wpointer-arith -Wreturn-type -Wcast-qual -Wwrite-strings -Wswitch -Wunused-parameter -Wcast-align -Wchar-subscripts -Winline -Wredundant-decls -o CMakeFiles/gtest.dir/src/gtest-all.cc.o -c /home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googletest/src/gtest-all.cc",
+  "file": "/home/kbriggs/source/personal-dev/interviews/sarcos/googletest/googletest/src/gtest-all.cc"
+}
+]
