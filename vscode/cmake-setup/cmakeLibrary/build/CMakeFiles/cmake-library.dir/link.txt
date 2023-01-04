@@ -1,0 +1,2 @@
+/usr/bin/ar qc libcmake-library.a CMakeFiles/cmake-library.dir/cmake-library.cpp.o
+/usr/bin/ranlib libcmake-library.a

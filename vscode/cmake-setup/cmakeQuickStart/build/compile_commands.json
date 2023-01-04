@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/kevin/source/personal-dev/vscode/cmake-setup/cmakeQuickStart/build",
+  "command": "/usr/bin/g++   -O2 -g -DNDEBUG -o CMakeFiles/cmake-quickstart.dir/main.cpp.o -c /home/kevin/source/personal-dev/vscode/cmake-setup/cmakeQuickStart/main.cpp",
+  "file": "/home/kevin/source/personal-dev/vscode/cmake-setup/cmakeQuickStart/main.cpp"
+}
+]

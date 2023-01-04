@@ -1,0 +1,1 @@
+/usr/bin/g++ -O2 -g -DNDEBUG -rdynamic CMakeFiles/cmake-quickstart.dir/main.cpp.o -o cmake-quickstart 

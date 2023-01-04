@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/kevin/source/personal-dev/vscode/cmake-setup/cmakeLibrary/build",
+  "command": "/usr/bin/clang++   -g -o CMakeFiles/cmake-library.dir/cmake-library.cpp.o -c /home/kevin/source/personal-dev/vscode/cmake-setup/cmakeLibrary/cmake-library.cpp",
+  "file": "/home/kevin/source/personal-dev/vscode/cmake-setup/cmakeLibrary/cmake-library.cpp"
+}
+]
