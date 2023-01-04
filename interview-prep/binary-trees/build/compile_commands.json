@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/kbriggs/source/personal-dev/interview-prep/binary-trees/build",
+  "command": "/usr/bin/clang++    -g   -o CMakeFiles/BinaryTree.dir/main.cpp.o -c /home/kbriggs/source/personal-dev/interview-prep/binary-trees/main.cpp",
+  "file": "/home/kbriggs/source/personal-dev/interview-prep/binary-trees/main.cpp"
+}
+]

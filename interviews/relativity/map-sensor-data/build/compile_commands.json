@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/kbriggs/source/personal-dev/interviews/relativity/map-sensor-data/build",
+  "command": "/usr/bin/g++-10    -g   -o CMakeFiles/MapSensorData.dir/main.cpp.o -c /home/kbriggs/source/personal-dev/interviews/relativity/map-sensor-data/main.cpp",
+  "file": "/home/kbriggs/source/personal-dev/interviews/relativity/map-sensor-data/main.cpp"
+}
+]

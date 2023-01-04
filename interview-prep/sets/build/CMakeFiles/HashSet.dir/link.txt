@@ -1,0 +1,2 @@
+/usr/bin/ar qc libHashSet.a  CMakeFiles/HashSet.dir/HashSet.cpp.o
+/usr/bin/ranlib libHashSet.a

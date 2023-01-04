@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/kbriggs/source/personal-dev/interview-prep/sets/build",
+  "command": "/usr/bin/clang++    -g   -o CMakeFiles/HashSet.dir/HashSet.cpp.o -c /home/kbriggs/source/personal-dev/interview-prep/sets/HashSet.cpp",
+  "file": "/home/kbriggs/source/personal-dev/interview-prep/sets/HashSet.cpp"
+}
+]

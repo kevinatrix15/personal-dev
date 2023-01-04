@@ -1,0 +1,2 @@
+C:\work\ANSYSDev\source\personal-dev\C++Learning\SentinelsWithConcepts\SentinelsWithConcepts\Debug\SentinelsWithConcepts.exe
+C:\work\ANSYSDev\source\personal-dev\C++Learning\SentinelsWithConcepts\SentinelsWithConcepts\Debug\SentinelsWithConcepts.pdb

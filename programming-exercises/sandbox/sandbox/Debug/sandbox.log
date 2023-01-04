@@ -1,0 +1,32 @@
+﻿  BinTreeToList.cpp
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(75,34): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(75,34): error C2143: syntax error: missing ',' before '<'
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(76,25): error C2065: 'nodes': undeclared identifier
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(76,25): error C2672: 'begin': no matching overloaded function found
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(76,32): error C2893: Failed to specialize function template 'unknown-type std::begin(_Container &)'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.28.29333\include\xutility(2169): message : see declaration of 'std::begin'
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(76,32): message : With the following template arguments:
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(76,32): message : '_Container=unknown-type'
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(76,32): error C2784: 'const _Elem *std::begin(std::initializer_list<_Elem>) noexcept': could not deduce template argument for 'std::initializer_list<_Elem>' from 'unknown-type'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.28.29333\include\initializer_list(57): message : see declaration of 'std::begin'
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(76,25): error C2672: 'end': no matching overloaded function found
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(76,32): error C2893: Failed to specialize function template 'unknown-type std::end(_Container &)'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.28.29333\include\xutility(2179): message : see declaration of 'std::end'
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(76,32): message : With the following template arguments:
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(76,32): message : '_Container=unknown-type'
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(76,32): error C2784: 'const _Elem *std::end(std::initializer_list<_Elem>) noexcept': could not deduce template argument for 'std::initializer_list<_Elem>' from 'unknown-type'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.28.29333\include\initializer_list(63): message : see declaration of 'std::end'
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(76,32): error C3536: '<begin>$L0': cannot be used before it is initialized
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(76,32): error C3536: '<end>$L0': cannot be used before it is initialized
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(76,30): error C2100: illegal indirection
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(77,22): error C3861: 'to_string': identifier not found
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(98,40): error C2039: 'to_string': is not a member of 'std'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.28.29333\include\vector(24): message : see declaration of 'std'
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(98,49): error C3861: 'to_string': identifier not found
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(99,41): error C2664: 'void printLayerNodes(const int)': cannot convert argument 1 from 'const _Ty' to 'const int'
+          with
+          [
+              _Ty=std::vector<int,std::allocator<int>>
+          ]
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(99,40): message : No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\sandbox\BinTreeToList.cpp(75,6): message : see declaration of 'printLayerNodes'

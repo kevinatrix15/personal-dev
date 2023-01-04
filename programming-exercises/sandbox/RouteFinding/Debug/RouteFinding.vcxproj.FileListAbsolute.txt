@@ -1,0 +1,2 @@
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\RouteFinding\Debug\RouteFinding.exe
+C:\work\ANSYSDev\source\personal-dev\programming-exercises\sandbox\RouteFinding\Debug\RouteFinding.pdb
