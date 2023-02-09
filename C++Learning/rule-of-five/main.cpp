@@ -6,12 +6,14 @@
 // see https://stackoverflow.com/questions/60155403/select-the-implementation-of-the-parent-class-at-runtime
 // for possible solution
 
+class SuperParent { };
+
 /**
  * Case 1- won't allow any copying.
  * - prevents polymorphic copy (slicing)- good
  * - prevents regular copying- generally bad
 */
-class ParentDeleted
+class ParentDeleted : public SuperParent
 {
    public:
     virtual ~ParentDeleted() = default;
@@ -34,7 +36,7 @@ class ParentDeleted
  * - allows regular copying- good
  * - allows polymorphic copying (slicing)- bad
 */
-class ParentDefaultedPublic
+class ParentDefaultedPublic : public SuperParent
 {
    public:
     virtual ~ParentDefaultedPublic() = default;
@@ -52,12 +54,30 @@ class ParentDefaultedPublic
     ParentDefaultedPublic& operator=(ParentDefaultedPublic&&) = default;
 };
 
+class PolymorphicBase
+{
+   public:
+    virtual ~PolymorphicBase() = default;
+
+    // Other virtual methods...
+
+   protected:
+    // Constructors
+    PolymorphicBase() = default;
+    PolymorphicBase(const PolymorphicBase& other) = default;
+    PolymorphicBase(PolymorphicBase&& other) = default;
+
+    // Assignment Operators
+    PolymorphicBase& operator=(const PolymorphicBase& other) = default;
+    PolymorphicBase& operator=(PolymorphicBase&& other) = default;
+};
+
 /**
  * Case 3- Undefined (breaks rule of 5) (similar to Case 2)
  * - allows regular copying- good
  * - allows polymorphic copying (slicing)- bad
 */
-class ParentUndefined
+class ParentUndefined : public SuperParent
 {
    public:
     virtual ~ParentUndefined() = default;
@@ -70,7 +90,7 @@ class ParentUndefined
  * - allows regular copying- good
  * - prevents polymorphic copying (slicing)- good
 */
-class ParentDefaultedProtected
+class ParentDefaultedProtected : public SuperParent
 {
    public:
     virtual ~ParentDefaultedProtected() = default;
@@ -88,14 +108,16 @@ class ParentDefaultedProtected
     ParentDefaultedProtected& operator=(ParentDefaultedProtected&&) = default;
 };
 
-class Child : public ParentDefaultedProtected
+template<class Base>
+class Child : public Base
 {
    public:
     explicit Child(const int val) : val_(val)
     {
     }
 
-    void printVal() const override{
+    void printVal() const override
+    {
         std::cout << "val: " << val_ << std::endl;
     }
 
@@ -103,37 +125,47 @@ class Child : public ParentDefaultedProtected
     int val_{};
 };
 
-class Grandchild : public Child
+template<class Base>
+class Grandchild : public Child<Base>
 {
    public:
-    explicit Grandchild(const int v1, const int v2) : Child(v1), val_(v2)
+    explicit Grandchild(const int v1, const int v2) : Child<Base>(v1), val_(v2)
     {
     }
 
     void printVal() const override{
-        std::cout << "Grandchild: v1: " << Child::val_ << ", v2: " << val_ << std::endl;
+        std::cout << "Grandchild: v1: " << Child<Base>::val_ << ", v2: " << val_ << std::endl;
     }
 
    private:
     int val_{};
 };
 
-int main(int, char**) {
-    Child d1{1};
-    Child d2{2};
-    // Grandchild d2{2, 3};
-    ParentDefaultedProtected* d1_ptr = &d1;
-    ParentDefaultedProtected* d2_ptr = &d2;
-
-    // polymorphic copy
-    *d2_ptr = *d1_ptr;
-    d1.printVal();
-
-    // object slicing
-    d2_ptr->printVal();
+template<class ParentType>
+void attemptCopying()
+{
+    Child<ParentType> d1{1};
+    Child<ParentType> d2{2};
+    ParentType* d1_ptr = &d1;
+    ParentType* d2_ptr = &d2;
 
     // regular copy
     d2 = d1;
+
+    // polymorphic copy
+    *d2_ptr = *d1_ptr;
+}
+
+int main(int, char**) {
+    // Grandchild<ParentDefaultedProtected> d2{2, 3};
+    // Child<ParentDefaultedProtected> c = d2;
+    // c.printVal();
+    // d1.printVal();
+
+    attemptCopying<ParentUndefined >();
+
+    // object slicing
+    // d2_ptr->printVal();
 
     std::cout << "Hello, world!\n";
 }
