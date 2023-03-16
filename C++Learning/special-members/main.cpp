@@ -1,40 +1,5 @@
 #include <iostream>
 
-class SuperParent { };
-
-#if 0
-class Container : public SuperParent
-{
-   public:
-    Container() noexcept
-    {
-    }
-
-    // TODO: add special impl of this
-    ~Container() = default;
-
-    // Copy constructors
-    Container(const Container& other)
-    {
-        // TODO: perform deep copy of resources
-    }
-
-    Container(Container&& other) noexcept
-    {
-
-    }
-
-    Container& operator=(const Container& other)
-    {
-    }
-    
-    Container& operator=(Container&& other) noexcept
-    {
-    }
-};
-#endif
-
-
 class A
 {
     public:
@@ -63,7 +28,7 @@ class A
         return *this;
     }
 
-    // Move semantics
+    // Move operations
     A(A&& other) noexcept = default;
     A& operator=(A&& other) noexcept = default;
 
@@ -231,7 +196,9 @@ int main(int, char**) {
     b1 = std::move(b2);     // move assignment
 
     int val2 = 51;
-    C c1(&val1);            // custom ctor
+    C c1(&val2);            // custom ctor
     C c2(std::move(c1));    // move ctor not defined. Calls copy ctor instead
     c1 = std::move(c2);
+
+    return 0;
 }

@@ -1,11 +1,10 @@
 #include <iostream>
 
-// Parentd on answer here: stackoverflow.com/questions/49961811/must-a-c-interface-obey-the-rule-of-five 
+// Based on discussion here: stackoverflow.com/questions/49961811/must-a-c-interface-obey-the-rule-of-five 
 
-// TODO: for examples, would like to easily switch between different definitions of parents
-// see https://stackoverflow.com/questions/60155403/select-the-implementation-of-the-parent-class-at-runtime
-// for possible solution
-
+/**
+ * Base class allowing convenient swapping of parent types using templates.
+*/
 class SuperParent { };
 
 /**
@@ -20,7 +19,7 @@ class ParentDeleted : public SuperParent
 
     virtual void printVal() const = 0;
 
-   protected:
+   public:
     // Constructors
     ParentDeleted() = delete;
     ParentDeleted(const ParentDeleted&) = delete;
@@ -52,24 +51,6 @@ class ParentDefaultedPublic : public SuperParent
     // Assignment Operators
     ParentDefaultedPublic& operator=(const ParentDefaultedPublic&) = default;
     ParentDefaultedPublic& operator=(ParentDefaultedPublic&&) = default;
-};
-
-class PolymorphicBase
-{
-   public:
-    virtual ~PolymorphicBase() = default;
-
-    // Other virtual methods...
-
-   protected:
-    // Constructors
-    PolymorphicBase() = default;
-    PolymorphicBase(const PolymorphicBase& other) = default;
-    PolymorphicBase(PolymorphicBase&& other) = default;
-
-    // Assignment Operators
-    PolymorphicBase& operator=(const PolymorphicBase& other) = default;
-    PolymorphicBase& operator=(PolymorphicBase&& other) = default;
 };
 
 /**
@@ -156,16 +137,20 @@ void attemptCopying()
     *d2_ptr = *d1_ptr;
 }
 
+template<class ParentType>
+void attemptMoving()
+{
+    Child<ParentType> d1{1};
+    Child<ParentType> d2{2};
+
+    d2 = std::move(d1);                     // Move assignment
+    Child<ParentType> d3(std::move(d2));    // Move ctor
+}
+
 int main(int, char**) {
-    // Grandchild<ParentDefaultedProtected> d2{2, 3};
-    // Child<ParentDefaultedProtected> c = d2;
-    // c.printVal();
-    // d1.printVal();
 
-    attemptCopying<ParentUndefined >();
+    attemptCopying<ParentDefaultedProtected>();
+    attemptMoving<ParentDefaultedProtected>();
 
-    // object slicing
-    // d2_ptr->printVal();
-
-    std::cout << "Hello, world!\n";
+    return 0;
 }
