@@ -1,0 +1,31 @@
+cmake_minimum_required(VERSION 3.20)
+
+################################################################################
+# In-source guard
+#-------------------------------------------------------------------------------
+
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
+  message(
+    FATAL_ERROR
+    "In-source builds are not supported. "
+    "You may need to delete 'CMakeCache.txt' and 'CMakeFiles/' first."
+  )
+endif()
+
+################################################################################
+# Project declaration
+#-------------------------------------------------------------------------------
+
+project(core-lib VERSION 0.0.0)
+
+################################################################################
+# Variables
+#-------------------------------------------------------------------------------
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+
+################################################################################
+# Add source directories
+#-------------------------------------------------------------------------------
+add_subdirectory(src)

@@ -165,3 +165,282 @@ inline unique_ptr<HotDrink> DrinkWithVolumeFactory::make_drink(const string& nam
 - May have hierarchies of factories to create related objectes
 
 
+## Section 5- Prototype Pattern
+About object copying- when easier to copy than create from scratch.
+
+- Complicated objects aren't designed from scratch
+- An existing (partially or fully constructed) design is a prototype
+- We make a copy (clone) the prototype and customize it
+    - Requires deep copy support
+- Make cloning convenient (e.g., using a factory)
+
+### Example
+Create John Doe and Jane Smith at same address with different suites.
+- Create Jane initially as a copy of John, and then modify her address suite.
+- Problem: When suite is stored as a pointer, we've also modified John's address
+    - This is result of creating a shallow copy
+    - We need the ability to create a deep copy to avoid this
+
+Deep copy: 
+This can be done by defining a copy ctor
+
+```c++
+Contact(const Contact& other)
+: name {other.name}, address { new Address {other.address->street, other.address->city, other.address->suite }}
+{
+
+}
+
+...
+
+main()
+{
+    Contact john{/*...*/};
+    Contact jane{john};
+    jane.name = "Jane Smith";
+    name.address->suite = 103;
+}
+```
+
+Problem: Become brittle when change data members, must remember to update explicit deep copy. Copy assignment not happening within the Address class, so easier to miss changes.
+
+Possible Solution:
+- Give Address its own copy ctor
+
+```c++
+Address(const Address& address) : street{address.street}, city{address.city}, suite{address.suite}
+{}
+
+///
+
+Contact(const Contact& other) : name {other.name}, address {new Address{*other.address}}
+{}
+```
+
+### Improvement- give the user a prototype to work with (Prototype Factory)
+Could create a namespace-local variable of that type as a prototype.
+- Works, but not explicit enough to let users know they can make copies of it.
+
+```c++
+struct EmployeeFactory
+{
+    static unique_ptr<Contact> new_main_office_employee(const string& name, int suite)
+    {
+        static Contact p{"", new Address {"123 East Dr", "London", 0}};
+        return new_employee(name, suite, p);
+    }
+
+private:
+    static unique_ptr<Contact> new_employee(const string& name, int suite, const Contact& prototype)
+    {
+        auto result = make_unique<Contact>(prototype);
+        result->name = name;
+        result->address->suite = suite;
+        return result;
+    }
+};
+
+...
+
+main()
+{
+    EmployeeFactory::new_main_office_employee("John", 123);
+}
+```
+
+### Remaining pain point- have to implement object copying yourself
+Requires copy ctors, assignment operator, or explicit clone method to replicate object entirely.
+
+Solution: user serialization.
+- Take all data of an object, serialize.
+- Consumer would take serialized data and deserialize.
+- This example uses Boost serialization for this.
+
+```c++
+#include <boost/serialization/serialization.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+```
+
+In Contact class:
+
+```c++
+struct Contact
+{
+    ...
+    private:
+    friend class serialization::access;
+
+    template <class archive>
+    void serialize(archive& ar, const unsigned version)
+    {
+        ar & name;
+        ar & address;   // NOTE: don't have to dereference the pointer
+    }
+}
+
+...
+
+main()
+{
+    auto clone = [](const Contact& c)
+    {
+        ostringstream oss;
+        archive::text_oarchive oa(oss); // creates string archive
+        oa << c;                        // serialize c to an output archive into string representation
+        string s = oss.str();
+        cout << s << endl;
+
+        // deserialize into the actual object
+        istringstream iss(s);
+        archive::text_iarchive ia(iss);
+        Contact result;
+        ia >> result;
+        return result;
+    };
+
+    auto john = EmployeeFactory::new_main_office_employee("John", 123);
+    auto jane = clone(*john);
+}
+```
+NOTE: must also define serialization in Address
+
+Opinion: this is really only beneficial if we plan to serialize anyway. Still have to define 'copy' with serialization definition (althought with some simplicity as pointer copy doesn't need explicit definition)
+
+
+## Section 6- Singletons
+Motivation:
+- for some components, in only makes sense to have one instance
+    - Database repository
+    - Object factory
+- e.g., ctor  call is expensive
+    - only want to do it once
+    we provide everyone with the same instance
+- Want to prevent clients from creating additional copies
+- Need to take care of lazy instntiation and thread safety
+
+### Singleton Definition
+Singleton: comp. which is instantiated only once, preventing from being instantiated more than once
+
+```c++
+class SingletonDatabase : public Database
+{
+  SingletonDatabase()
+  {
+    std::cout << "Initializing database" << std::endl;
+
+    std::ifstream ifs("capitals.txt");
+
+    std::string s, s2;
+    while (getline(ifs, s))
+    {
+      getline(ifs, s2);
+      int pop = boost::lexical_cast<int>(s2);
+      capitals[s] = pop;
+    }
+    //instance_count++;
+  }
+
+  std::map<std::string, int> capitals;
+
+public:
+  //static int instance_count;
+
+  // NOTE: we delete the copy and assignment operators to ensure
+  // we may only have one
+  SingletonDatabase(SingletonDatabase const&) = delete;
+  void operator=(SingletonDatabase const&) = delete;
+
+  // This is what makes it a Singleton- we've defined the ctor as private (above)
+  // and only provide access to it through a static method, which returns a static
+  // Singleton object.
+  static SingletonDatabase& get()
+  {
+    static SingletonDatabase db;
+    return db;
+  }
+
+  int get_population(const std::string& name) override
+  {
+    return capitals[name];
+  }
+};
+
+```
+
+### Testability Issues
+Given the above `SingletonDatabase`, say we want a struct that operates on it to e.g., get the sum
+of the populations for cities it's provided.
+
+```c++
+struct SingletonRecordFinder
+{
+  int total_population(std::vector<std::string> names)
+  {
+    int result = 0;
+    for (auto& name : names)
+      result += SingletonDatabase::get().get_population(name);
+    return result;
+  }
+};
+```
+
+To test this function, we are forced to use real values from the 'production' database because of the strong coupling of the singleton.
+
+Idea: allow testing of SingletonRecordFinder with a database we supply for testing purposes.
+
+### Singleton with dependency injection
+First, we define a pure virtual base class, with virtual method for getting the population (for above example).
+
+```c++
+class Database
+{
+public:
+  virtual int get_population(const std::string& name) = 0;
+};
+
+```
+
+Now we can have a dummy database
+
+```c++
+class DummyDatabase : public Database
+{
+  std::map<std::string, int> capitals;
+public:
+
+
+  DummyDatabase()
+  {
+    capitals["alpha"] = 1;
+    capitals["beta"] = 2;
+    capitals["gamma"] = 3;
+  }
+
+  int get_population(const std::string& name) override {
+    return capitals[name];
+  }
+};
+```
+
+We need to change the SingletonRecordFinder to have an injectible database
+
+```c++
+struct ConfigurableRecordFinder
+{
+  explicit ConfigurableRecordFinder(Database& db)
+    : db{db}
+  {
+  }
+
+  int total_population(std::vector<std::string> names) const
+  {
+    int result = 0;
+    for (auto& name : names)
+      result += db.get_population(name);
+    return result;
+  }
+
+  Database& db;
+};
+```
