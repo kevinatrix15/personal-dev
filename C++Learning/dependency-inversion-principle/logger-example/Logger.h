@@ -1,3 +1,4 @@
+#include <fstream>
 #include <string_view>
 
 class ILogger
@@ -22,4 +23,11 @@ class Logger : public ILogger
     virtual ~Logger();
     void setLogLevel(LogLevel level) override;
     void log(std::string_view message, LogLevel logLevel) override;
+
+  private:
+    // converts a log level to a human readable string
+    std::string_view getLogLevelString(LogLevel level) const;
+
+    std::ofstream output_stream_;
+    LogLevel log_level_;
 };
